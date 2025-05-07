@@ -20,6 +20,7 @@ export const HogarSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
+      
     },
 });
 

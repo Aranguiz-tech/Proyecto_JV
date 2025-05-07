@@ -9,6 +9,11 @@ export const AsistenciaSchema = new EntitySchema({
             type: "int",
             generated: true,
         },
+        asistencia: {
+            type: "enum",
+            enum: ["presente", "ausente", "justificado"],
+            default: "ausente",
+        },
         fechaCreacion: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
@@ -20,5 +25,29 @@ export const AsistenciaSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
+        reunionId: {
+            type: "int",
+            nullable: false,
+            unique: true,
+        },
+        usuarioId: {
+            type: "int",
+            nullable: false,
+            unique: true,
+        },
+    },
+    relations: {
+        reunion: {
+            target: "Reunion",
+            type: "many-to-one",
+            joinColumn: { name: "reunionId" },
+            inverseSide: "asistencias",
+        },
+    usuario: {
+            target: "Usuario",
+            type: "many-to-one",
+            joinColumn: { name: "usuarioId" },
+            inverseSide: "asistencias",
+        },    
     },
 });

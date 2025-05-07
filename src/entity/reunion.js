@@ -10,6 +10,11 @@ export const ReunionSchema = new EntitySchema({
             type: "int",
             generated: true,
         },
+        asunto: {
+            type: "varchar",
+            length: 255,
+            nullable: false,
+        },
         fechaInicio: {
             type: "timestamp",
             nullable: false,

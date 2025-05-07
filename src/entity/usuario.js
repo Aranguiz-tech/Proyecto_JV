@@ -61,7 +61,16 @@ export const UserSchema = new EntitySchema({
             default: () => "CURRENT_TIMESTAMP",
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
-        }
+        },
+
+        relations: {
+            hogar: {
+                target: "Hogar",
+                type: "many-to-one",
+                joinColumn: { name: "id_hogar" },
+                nullable: false,
+            },
+        },
     }
 })
 

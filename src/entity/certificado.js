@@ -14,6 +14,15 @@ export const CertificadoSchema = new EntitySchema({
             enum: ["Para fines personales", "Para fines laborales", "Para fines escolares", "Para fines judiciales", "para fines gubernamentales"],
             default: "asistencia",
         },
+        estado: {
+            type: "enum",
+            enum: ["pendiente", "aprobado", "rechazado"],
+            default: "pendiente",
+        },
+        justificacionDeReachazo: {
+            type: "text",
+            nullable: true,
+        },
         fechaCreacion: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
