@@ -4,7 +4,7 @@ export const AsistenciaSchema = new EntitySchema({
     name: "Asistencia",
     tableName: "asistencias",
     columns: {
-        id: {
+        idasistencia: { 
             primary: true,
             type: "int",
             generated: true,
@@ -25,15 +25,13 @@ export const AsistenciaSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
-        reunionId: {
+        reunionId: { 
             type: "int",
             nullable: false,
-            unique: true,
         },
-        usuarioId: {
+        usuarioId: { 
             type: "int",
             nullable: false,
-            unique: true,
         },
     },
     relations: {
@@ -42,12 +40,13 @@ export const AsistenciaSchema = new EntitySchema({
             type: "many-to-one",
             joinColumn: { name: "reunionId" },
             inverseSide: "asistencias",
+            onDelete: "CASCADE",
         },
-    usuario: {
+        usuario: {
             target: "Usuario",
             type: "many-to-one",
             joinColumn: { name: "usuarioId" },
             inverseSide: "asistencias",
-        },    
-    },
-});
+            onDelete: "CASCADE",
+        },
+    }})

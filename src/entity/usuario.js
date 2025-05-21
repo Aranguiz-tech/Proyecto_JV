@@ -9,12 +9,12 @@ export const UserSchema = new EntitySchema({
             type: "int",
             generated: true,
         },
-        rol : {
+        rol: {
             type: "enum",
             enum: ["administrador", "jefe de hogar", "vecino"],
             default: "vecino",
         },
-        rut : {
+        rut: {
             type: "varchar",
             length: 12,
             unique: true,
@@ -62,15 +62,23 @@ export const UserSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
-
-        relations: {
-            hogar: {
-                target: "Hogar",
-                type: "many-to-one",
-                joinColumn: { name: "id_hogar" },
-                nullable: false,
-            },
+        id_hogar: { 
+            type: "int",
+            nullable: false,
         },
-    }
-})
-
+    },
+    relations: {
+        hogar: {
+            target: "Hogar",
+            type: "many-to-one",
+            joinColumn: { name: "id_hogar" },
+            nullable: false,
+            inverseSide: "usuarios", 
+        },
+        asistencias: {
+            target: "Asistencia",
+            type: "one-to-many",
+            inverseSide: "usuario", 
+        },
+    },
+});

@@ -11,8 +11,14 @@ export const CertificadoSchema = new EntitySchema({
         },
         motivo: {
             type: "enum",
-            enum: ["Para fines personales", "Para fines laborales", "Para fines escolares", "Para fines judiciales", "para fines gubernamentales"],
-            default: "asistencia",
+            enum: [
+                "Para fines personales",
+                "Para fines laborales",
+                "Para fines escolares",
+                "Para fines judiciales",
+                "para fines gubernamentales",
+            ],
+            default: "Para fines personales",
         },
         estado: {
             type: "enum",
@@ -33,6 +39,19 @@ export const CertificadoSchema = new EntitySchema({
             default: () => "CURRENT_TIMESTAMP",
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
+        },
+        usuarioId: {
+            type: "int",
+            nullable: false,
+        },
+    },
+    relations: {
+        usuario: {
+            target: "Usuario",
+            type: "many-to-one",
+            joinColumn: { name: "usuarioId" },
+            inverseSide: "certificados",
+            onDelete: "CASCADE",
         },
     },
 });

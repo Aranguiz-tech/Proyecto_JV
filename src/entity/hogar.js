@@ -9,6 +9,13 @@ export const HogarSchema = new EntitySchema({
             type: "int",
             generated: true,
         },
+        direccion: {
+            type: "varchar",
+            length: 100,
+            nullable: false,
+            unique: true
+        },
+
         fechaCreacion: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
@@ -20,9 +27,13 @@ export const HogarSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
-      
+    },
+        relations: {
+        usuarios: {
+            target: "Usuario",
+            type: "one-to-many",
+            inverseSide: "hogar", 
+        },
     },
 });
-
-
 

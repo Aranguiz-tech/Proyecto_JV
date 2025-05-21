@@ -1,6 +1,5 @@
 import { EntitySchema } from "typeorm";
 
-
 export const ReunionSchema = new EntitySchema({
     name: "Reunion",
     tableName: "reuniones",
@@ -37,6 +36,14 @@ export const ReunionSchema = new EntitySchema({
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
             onUpdate: "CURRENT_TIMESTAMP",
+            nullable: false,
+        },
+    },
+    relations: {
+        creador: {
+            type: "many-to-one",
+            target: "Usuario", 
+            joinColumn: true,
             nullable: false,
         },
     },
