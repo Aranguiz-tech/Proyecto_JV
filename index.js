@@ -11,5 +11,5 @@ app.use("/api", apiRoutes);
 connectDB().then(() => {
   app.listen(PORT, () => {
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
-    });
+    };
 });
