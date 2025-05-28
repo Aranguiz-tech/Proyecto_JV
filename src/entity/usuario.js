@@ -12,7 +12,7 @@ export const UserSchema = new EntitySchema({
         rol: {
             type: "enum",
             enum: ["administrador", "jefe de hogar", "vecino"],
-            default: "vecino",
+            nullable: false,
         },
         rut: {
             type: "varchar",
@@ -30,11 +30,11 @@ export const UserSchema = new EntitySchema({
             length: 50,
             nullable: false,
         },
-        direccion: {
+        /* direccion: {
             type: "varchar",
             length: 100,
             nullable: false,
-        },
+        },*/
         telefono: {
             type: "varchar",
             length: 15,
