@@ -1,5 +1,6 @@
 import express from "express";
 import { connectDB } from "./src/config/configDB.js"; 
+import { cookieKey, HOST, PORT } from "./config/configEnv.js";
 import apiRoutes from "./src/routes/index.route.js";
 
 const app = express();
