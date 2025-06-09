@@ -40,11 +40,18 @@ export const ReunionSchema = new EntitySchema({
         },
     },
     relations: {
-        creador: {
+        asistencias: {
+            target: "Asistencia",
+            type: "one-to-many",
+            inverseSide: "reunion",
+            cascade: true, 
+        },
+        hogar: {
+            target: "Hogar",
             type: "many-to-one",
-            target: "Usuario", 
-            joinColumn: true,
-            nullable: false,
+            joinColumn: { name: "hogarId" },
+            inverseSide: "reuniones",
+            onDelete: "CASCADE", 
         },
     },
 });

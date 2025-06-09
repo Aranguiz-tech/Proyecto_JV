@@ -1,10 +1,9 @@
 import { AppDataSource } from "../config/configDB.js";
 
 export const createUsuario = async (req, res) => {
-    const { rut, nombre, apellido, email, telefono, password, rol, direccion } = req.body; 
+    const { rut, nombre, apellido, email, telefono, password, rol, id_hogar } = req.body;
 
-
-    try { 
+    try {
         const userRepo = AppDataSource.getRepository("Usuario");
         const hogarRepo = AppDataSource.getRepository("Hogar");
        
@@ -12,31 +11,28 @@ export const createUsuario = async (req, res) => {
         if (existeUsuario) {
             return res.status(400).json({ message: "El RUT ya está registrado" });
         }
+      
         const existeEmail = await userRepo.findOne({ where: { email } });
-        if (existeEmail) { 
+        if (existeEmail) {
             return res.status(400).json({ message: "El email ya está registrado" });
         }
- 
-        const hogarExistente = await hogarRepo.findOne({ where: { direccion } }); 
-
-        let hogarFinal; 
-
-        if (hogarExistente) { 
-            hogarFinal = hogarExistente; 
-        } else {
-            const nuevoHogar = hogarRepo.create({ direccion });
-            hogarFinal = await hogarRepo.save(nuevoHogar);
-            
+   
+        const hogarExistente = await hogarRepo.findOne({ where: { id: id_hogar } });
+        if (!hogarExistente) {
+            return res.status(404).json({ message: "El hogar indicado no existe" });
         }
 
-        if (rol === "jefe de hogar") {
-          const jefeExistente = await userRepo.findOne({
-       where: { id_hogar: hogarFinal.id, rol : "jefe de hogar" }});
-       if (jefeExistente) {
-        return res.status(400).json({ message: "Ya existe un jefe de hogar en esta dirección." });
-      }
-          }
+       if (rol === "jefe de hogar") {
+        const existeJefe = await userRepo.findOne({
+          where: { rol, hogar: { id: id_hogar } }
+         });
+         console.log(rol, id_hogar);
 
+         if (existeJefe)
+         return res.status(400).json({ message: "Ya existe un jefe de hogar en esta dirección." });
+        }
+
+        
         const usuarioNuevo = userRepo.create({
             rut,
             nombre,
@@ -45,9 +41,8 @@ export const createUsuario = async (req, res) => {
             telefono,
             password,
             rol,
-            id_hogar: hogarFinal.id
+            hogar: { id: id_hogar }
         });
-        
 
         await userRepo.save(usuarioNuevo);
         return res.status(201).json(usuarioNuevo);
@@ -57,6 +52,28 @@ export const createUsuario = async (req, res) => {
         return res.status(500).json({ mensaje: "Error del servidor" });
     }
 };
+
+export const createHogar = async (req, res) => {
+    const { direccion } = req.body;
+    try {
+        const hogarRepo = AppDataSource.getRepository("Hogar");
+
+        const hogarExistente = await hogarRepo.findOne({ where: { direccion } });
+        if (hogarExistente) {
+            return res.status(400).json({ message: "La dirección ya está registrada" });
+        }
+
+        const nuevoHogar = hogarRepo.create({ direccion });
+        await hogarRepo.save(nuevoHogar);
+
+        return res.status(201).json(nuevoHogar);
+    } catch (error) {
+        console.error("Error al crear hogar:", error);
+        return res.status(500).json({ mensaje: "Error del servidor" });
+    }
+};
+
+
 
 export const deleteUsuario = async (req, res) => {
     const { rut } = req.params;
