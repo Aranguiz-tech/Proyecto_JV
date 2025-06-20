@@ -56,3 +56,30 @@ export const crearUsuarioService = async (datos) => {
         hogarId: nuevoUsuario.hogar.id
     }
 };
+
+export const actualizarUsuarioService = async (rut, nuevosDatos) => {
+    const userRepo = AppDataSource.getRepository("Usuario");
+
+    const usuario = await userRepo.findOne({ where: { rut } });
+    if (!usuario) {
+        return { error: "Usuario no encontrado" };
+    }
+    
+    usuario.nombre = nuevosDatos.nombre || usuario.nombre;
+    usuario.apellido = nuevosDatos.apellido || usuario.apellido;
+    usuario.email = nuevosDatos.email || usuario.email;
+    usuario.telefono = nuevosDatos.telefono || usuario.telefono;
+    usuario.rol = nuevosDatos.rol || usuario.rol;
+
+    await userRepo.save(usuario);
+
+    return {
+        id: usuario.id,
+        rut: usuario.rut,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        telefono: usuario.telefono,
+        rol: usuario.rol
+    };
+};

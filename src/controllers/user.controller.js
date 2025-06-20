@@ -1,5 +1,5 @@
 import { AppDataSource } from "../config/configDB.js";
-import { crearUsuarioService } from "../services/user.service.js";
+import { crearUsuarioService, actualizarUsuarioService } from "../services/user.service.js";
 
 export const createUsuario = async (req, res) => {
   try {
@@ -54,3 +54,22 @@ export const getUserPorRut = async (req, res) => {
         return res.status(500).json({ message: "Error interno del servidor" });
     }
 };
+
+export const updateUsuario = async (req, res) => {
+    const { rut } = req.params;
+    const nuevosDatos = req.body;
+
+    try {
+        const usuarioActualizado = await actualizarUsuarioService(rut, nuevosDatos);
+
+        if (usuarioActualizado.error) {
+            return res.status(404).json({ message: usuarioActualizado.error });
+        }
+
+        return res.status(200).json(usuarioActualizado);
+    } catch (error) {
+        console.error("Error al actualizar el usuario:", error);
+        return res.status(500).json({ message: "Error del servidor" });
+    }
+};
+

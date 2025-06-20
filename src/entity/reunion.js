@@ -15,11 +15,7 @@ export const ReunionSchema = new EntitySchema({
             nullable: false,
         },
         fechaInicio: {
-            type: "timestamp",
-            nullable: false,
-        },
-        fechaFin: {
-            type: "timestamp",
+            type: "date",
             nullable: false,
         },
         estado: {
