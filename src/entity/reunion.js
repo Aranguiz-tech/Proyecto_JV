@@ -23,6 +23,11 @@ export const ReunionSchema = new EntitySchema({
             enum: ["programada", "realizada", "cancelada"],
             default: "programada",
         },
+        motivoCancelacion: {
+            type: "varchar",
+            length: 255,
+            nullable: true,
+        },
         fechaCreacion: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP",
@@ -41,13 +46,6 @@ export const ReunionSchema = new EntitySchema({
             type: "one-to-many",
             inverseSide: "reunion",
             cascade: true, 
-        },
-        hogar: {
-            target: "Hogar",
-            type: "many-to-one",
-            joinColumn: { name: "hogarId" },
-            inverseSide: "reuniones",
-            onDelete: "CASCADE", 
         },
     },
 });
