@@ -15,17 +15,18 @@ export const ReunionSchema = new EntitySchema({
             nullable: false,
         },
         fechaInicio: {
-            type: "timestamp",
-            nullable: false,
-        },
-        fechaFin: {
-            type: "timestamp",
+            type: "date",
             nullable: false,
         },
         estado: {
             type: "enum",
             enum: ["programada", "realizada", "cancelada"],
             default: "programada",
+        },
+        motivoCancelacion: {
+            type: "varchar",
+            length: 255,
+            nullable: true,
         },
         fechaCreacion: {
             type: "timestamp",
@@ -40,11 +41,11 @@ export const ReunionSchema = new EntitySchema({
         },
     },
     relations: {
-        creador: {
-            type: "many-to-one",
-            target: "Usuario", 
-            joinColumn: true,
-            nullable: false,
+        asistencias: {
+            target: "Asistencia",
+            type: "one-to-many",
+            inverseSide: "reunion",
+            cascade: true, 
         },
     },
 });

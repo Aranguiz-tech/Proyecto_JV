@@ -29,7 +29,7 @@ export const AsistenciaSchema = new EntitySchema({
             type: "int",
             nullable: false,
         },
-        usuarioId: { 
+        hogarId: { 
             type: "int",
             nullable: false,
         },
@@ -40,13 +40,11 @@ export const AsistenciaSchema = new EntitySchema({
             type: "many-to-one",
             joinColumn: { name: "reunionId" },
             inverseSide: "asistencias",
-            onDelete: "CASCADE",
         },
-        usuario: {
-            target: "Usuario",
+        hogar: {
+            target: "Hogar",
             type: "many-to-one",
-            joinColumn: { name: "usuarioId" },
+            joinColumn: { name: "hogarId" },
             inverseSide: "asistencias",
-            onDelete: "CASCADE",
         },
     }})

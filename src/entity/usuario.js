@@ -62,10 +62,6 @@ export const UserSchema = new EntitySchema({
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
         },
-        id_hogar: { 
-            type: "int",
-            nullable: false,
-        },
     },
     relations: {
         hogar: {

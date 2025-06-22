@@ -1,62 +1,21 @@
 import { AppDataSource } from "../config/configDB.js";
+import { crearUsuarioService, actualizarUsuarioService } from "../services/user.service.js";
 
 export const createUsuario = async (req, res) => {
-    const { rut, nombre, apellido, email, telefono, password, rol, direccion } = req.body; 
-
-
-    try { 
-        const userRepo = AppDataSource.getRepository("Usuario");
-        const hogarRepo = AppDataSource.getRepository("Hogar");
-       
-        const existeUsuario = await userRepo.findOne({ where: { rut } });
-        if (existeUsuario) {
-            return res.status(400).json({ message: "El RUT ya está registrado" });
-        }
-        const existeEmail = await userRepo.findOne({ where: { email } });
-        if (existeEmail) { 
-            return res.status(400).json({ message: "El email ya está registrado" });
-        }
- 
-        const hogarExistente = await hogarRepo.findOne({ where: { direccion } }); 
-
-        let hogarFinal; 
-
-        if (hogarExistente) { 
-            hogarFinal = hogarExistente; 
-        } else {
-            const nuevoHogar = hogarRepo.create({ direccion });
-            hogarFinal = await hogarRepo.save(nuevoHogar);
-            
-        }
-
-        if (rol === "jefe de hogar") {
-          const jefeExistente = await userRepo.findOne({
-       where: { id_hogar: hogarFinal.id, rol : "jefe de hogar" }});
-       if (jefeExistente) {
-        return res.status(400).json({ message: "Ya existe un jefe de hogar en esta dirección." });
-      }
-          }
-
-        const usuarioNuevo = userRepo.create({
-            rut,
-            nombre,
-            apellido,
-            email,
-            telefono,
-            password,
-            rol,
-            id_hogar: hogarFinal.id
-        });
-        
-
-        await userRepo.save(usuarioNuevo);
-        return res.status(201).json(usuarioNuevo);
-
-    } catch (error) {
-        console.error("Error al crear usuario:", error);
-        return res.status(500).json({ mensaje: "Error del servidor" });
+  try {
+    const nuevoUsuario = await crearUsuarioService(req.body);
+    
+    if (nuevoUsuario.error) {
+      return res.status(400).json({ message: nuevoUsuario.error });
     }
+
+    return res.status(201).json(nuevoUsuario);
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    return res.status(500).json({ message: "Error del servidor" });
+  }
 };
+
 
 export const deleteUsuario = async (req, res) => {
     const { rut } = req.params;
@@ -95,3 +54,22 @@ export const getUserPorRut = async (req, res) => {
         return res.status(500).json({ message: "Error interno del servidor" });
     }
 };
+
+export const updateUsuario = async (req, res) => {
+    const { rut } = req.params;
+    const nuevosDatos = req.body;
+
+    try {
+        const usuarioActualizado = await actualizarUsuarioService(rut, nuevosDatos);
+
+        if (usuarioActualizado.error) {
+            return res.status(404).json({ message: usuarioActualizado.error });
+        }
+
+        return res.status(200).json(usuarioActualizado);
+    } catch (error) {
+        console.error("Error al actualizar el usuario:", error);
+        return res.status(500).json({ message: "Error del servidor" });
+    }
+};
+
