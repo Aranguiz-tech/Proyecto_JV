@@ -3,7 +3,7 @@ import {
     createSolicitud,
     deleteSolicitud, 
     getSolicitudes,  
-    getSolicitudPorid, 
+    getSolicitudPorId, 
     updateEstadoSolicitud,
     updateSolicitud
 } from "../controllers/solicitud.controller.js";
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 router.post("/", createSolicitud);
-router.get("/:id", getSolicitudPorid);
+router.get("/:id", getSolicitudPorId);
 router.get("/", getSolicitudes);
 router.delete("/:id", deleteSolicitud);
 router.put("/:id", updateSolicitud);

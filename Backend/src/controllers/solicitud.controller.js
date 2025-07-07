@@ -1,142 +1,90 @@
 "use strict";
-import { AppDataSource } from "../config/configDb.js";
+import {
+  createSolicitudService,
+  deleteSolicitudService,
+  getSolicitudesService,
+  getSolicitudPorIdService,
+  updateEstadoSolicitudService,
+  updateSolicitudService,
+} from "../services/solicitud.service.js";
+import {
+  handleErrorClient,
+  handleErrorServer,
+  handleSuccess,
+} from "../handlers/responseHandlers.js";
 
-export const createSolicitud = async (req, res) => {
-    const { tipo, motivo } = req.body;
+export async function createSolicitud(req, res) {
+  try {
+    const [nuevaSolicitud, error] = await createSolicitudService(req.body);
 
-    try { 
-        const SolRepo = AppDataSource.getRepository("Solicitud");
+    if (error) return handleErrorClient(res, 400, error);
 
-        const SolicitudNuevo = SolRepo.create({
-            tipo,
-            motivo,
-        });
+    handleSuccess(res, 201, "Solicitud creada correctamente", nuevaSolicitud);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
 
-        await SolRepo.save(SolicitudNuevo);
-       
-        return res.status(201).json(SolicitudNuevo);
-
-    } catch (error) {
-        console.error("Error al crear solicitud de documento:", error);
-        return res.status(500).json({ mensaje: "Error del servidor" });
-    }
-};
-
-
-export const getSolicitudPorid = async (req, res) => {
+export async function getSolicitudPorId(req, res) {
+  try {
     const { id } = req.params;
+    const [solicitud, error] = await getSolicitudPorIdService(Number(id));
 
-    try {
-        const SolRepo = AppDataSource.getRepository("Solicitud");
+    if (error) return handleErrorClient(res, 404, error);
 
-        const solicitud = await SolRepo.findOne({ where: { id: Number(id) } });
-
-        if (!solicitud) {
-            return res.status(404).json({ message: "Solicitud no encontrada" });
-        }
-
-        // RESPUESTA CUANDO ENCUENTRA LA SOLICITUD
-        return res.status(200).json({
-            message: "Solicitud encontrada",
-            data: solicitud
-        });
-
-    } catch (error) {
-        console.error("Error al obtener la solicitud de documento:", error);
-        return res.status(500).json({ message: "Error interno del servidor" });
-    }
-};
-
-
+    handleSuccess(res, 200, "Solicitud encontrada", solicitud);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
 
 export async function getSolicitudes(req, res) {
-    const SolRepo = AppDataSource.getRepository("Solicitud");
-    const Solicitudes = await SolRepo.find();
-    if (!Solicitudes) {
-        return res.status(404).json({
-            message: "No se encontraron Solicitudes ",
-            data: null
-        });
-    }
-    return res.status(302).json({
-        message: "Se encontraron solicitudes ",
-        data: Solicitudes
-    })
+  try {
+    const [solicitudes, error] = await getSolicitudesService();
+
+    if (error) return handleErrorClient(res, 404, error);
+
+    handleSuccess(res, 200, "Solicitudes encontradas", solicitudes);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }
 
-export async function deleteSolicitud(req,res) {
-    try {
-        const SolRepo = AppDataSource.getRepository("Solicitud");
-        const id = req.params.id;
-        const Soldeleted = await SolRepo.findOne({ where: [{ id: id }] });
-        if (!Soldeleted) {
-            return res.status(404).json({ message: "Solicitud no encontrada", data: null });
-        }
+export async function deleteSolicitud(req, res) {
+  try {
+    const { id } = req.params;
+    const [solicitud, error] = await deleteSolicitudService(Number(id));
 
-        await SolRepo.delete({ id });
-        return res.status(200).json({ message: "Solicitud eliminada", data: Soldeleted });
-        
-    } catch (error) {
-        console.error("Error al eliminar la solicitud de documento:", error);
-        return res.status(500).json({ message: "Error interno del servidor" });
-    }
+    if (error) return handleErrorClient(res, 404, error);
+
+    handleSuccess(res, 200, "Solicitud eliminada correctamente", solicitud);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }
 
-export async function updateSolicitud(req,res) {
-    try {
-        const { tipo, motivo } = req.body;
+export async function updateSolicitud(req, res) {
+  try {
+    const { id } = req.params;
+    const [solicitud, error] = await updateSolicitudService(Number(id), req.body);
 
-        const SolRepo = AppDataSource.getRepository("Solicitud");
-        const id = req.params.id;
-        const Solicitud = await SolRepo.findOne({ where: [{ id: id }] });
+    if (error) return handleErrorClient(res, 404, error);
 
-        if (!Solicitud) {
-            return res.status(404).json({ message: "Solicitud no encontrada", data: null });
-        }
-
-        Solicitud.tipo = tipo;
-        Solicitud.motivo = motivo;
-
-        const SolicitudActualizada = await SolRepo.save(Solicitud)
-
-        return res.status(200).json({ message: "Solicitud Actualizada", data: SolicitudActualizada });
-        
-    } catch (error) {
-        console.error("Error al actualizar la solicitud de documento:", error);
-        return res.status(500).json({ message: "Error interno del servidor" });
-    }
+    handleSuccess(res, 200, "Solicitud actualizada correctamente", solicitud);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }
 
-export async function updateEstadoSolicitud(req,res) {
-    try {
-        const { estado } = req.body;
+export async function updateEstadoSolicitud(req, res) {
+  try {
+    const { id } = req.params;
+    const [solicitud, error] = await updateEstadoSolicitudService(Number(id), req.body);
 
-        const SolRepo = AppDataSource.getRepository("Solicitud");
-        const id = req.params.id;
-        const Solicitud = await SolRepo.findOne({ where: [{ id: id }] });
+    if (error) return handleErrorClient(res, 404, error);
 
-        if (!Solicitud) {
-            return res.status(404).json({ message: "Solicitud no encontrada", data: null });
-        }
-
-        if(estado !== "aprobado"){
-            let { justificacionDeReachazo } = req.body;
-            if(!justificacionDeReachazo){
-                justificacionDeReachazo = "No se ha proporcionado una justificacion de rechazo";
-                Solicitud.justificacionDeReachazo = justificacionDeReachazo;
-            }else{
-                Solicitud.justificacionDeReachazo = justificacionDeReachazo;
-            }
-        }
-
-        Solicitud.estado = estado;
-
-        const SolicitudActualizada = await SolRepo.save(Solicitud)
-
-        return res.status(200).json({ message: "Solicitud Actualizada", data: SolicitudActualizada });
-        
-    } catch (error) {
-        console.error("Error al actualizar la solicitud de documento:", error);
-        return res.status(500).json({ message: "Error interno del servidor" });
-    }
+    handleSuccess(res, 200, "Estado de la solicitud actualizado", solicitud);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }
