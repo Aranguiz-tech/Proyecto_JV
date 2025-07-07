@@ -1,21 +1,104 @@
-import { AppDataSource } from "../config/configDb.js";
+"use strict";
+import {
+  createHogarService,
+  getAllHogaresService,
+  getHogarService,
+  updateHogarService,
+  deleteHogarService,
+} from "../services/hogar.service.js";
 
-    export const createHogar = async (req, res) => {
+import {
+  handleErrorClient,
+  handleErrorServer,
+  handleSuccess,
+} from "../handlers/responseHandlers.js";
+
+import {
+  hogarValidation,
+} from "../validations/hogar.validation.js";
+
+export async function createHogar(req, res) {
+  try {
     const { direccion } = req.body;
-    try {
-        const hogarRepo = AppDataSource.getRepository("Hogar");
 
-        const hogarExistente = await hogarRepo.findOne({ where: { direccion } });
-        if (hogarExistente) {
-            return res.status(400).json({ message: "La dirección ya está registrada" });
-        }
+    const { error } = hogarValidation.validate({ direccion });
+    if (error)
+      return handleErrorClient(res, 400, "Error de validación", error.message);
 
-        const nuevoHogar = hogarRepo.create({ direccion });
-        await hogarRepo.save(nuevoHogar);
+    const [hogar, hogarError] = await createHogarService(direccion);
 
-        return res.status(201).json(nuevoHogar);
-    } catch (error) {
-        console.error("Error al crear hogar:", error);
-        return res.status(500).json({ mensaje: "Error del servidor" });
+    if (hogarError)
+      return handleErrorClient(res, 400, "Error al crear hogar", hogarError);
+
+    return handleSuccess(res, 201, "Hogar creado exitosamente", hogar);
+  } catch (error) {
+    return handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getAllHogares(req, res) {
+  try {
+    const [hogares, error] = await getAllHogaresService();
+
+    if (error)
+      return handleErrorClient(res, 404, "No se pudieron obtener hogares", error);
+
+    if (!hogares.length)
+      return handleSuccess(res, 204, "No hay hogares registrados");
+
+    return handleSuccess(res, 200, "Hogares obtenidos correctamente", hogares);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getHogar(req, res) {
+  try {
+    const { id } = req.params;
+
+    const [hogar, hogarError] = await getHogarService(id);
+
+    if (hogarError)
+      return handleErrorClient(res, 404, "Hogar no encontrado", hogarError);
+
+    return handleSuccess(res, 200, "Hogar encontrado", hogar);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function updateHogar(req, res) {
+  try {
+    const { id } = req.params;
+    const { nuevaDireccion } = req.body;
+
+    if (!nuevaDireccion) {
+      return handleErrorClient(res, 400, "Error de validación", "La nueva dirección es obligatoria");
     }
-};
+
+    const [hogarActualizado, errorUpdate] = await updateHogarService(id, nuevaDireccion);
+
+    if (errorUpdate) {
+      return handleErrorClient(res, 400, "Error al actualizar hogar", errorUpdate);
+    }
+
+    return handleSuccess(res, 200, "Hogar actualizado correctamente", hogarActualizado);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+export async function deleteHogar(req, res) {
+  try {
+    const { id } = req.params;
+
+    const [hogarEliminado, errorDelete] = await deleteHogarService(id);
+
+    if (errorDelete) {
+      return handleErrorClient(res, 404, "Error al eliminar hogar", errorDelete);
+    }
+
+    return handleSuccess(res, 200, "Hogar eliminado correctamente", hogarEliminado);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
