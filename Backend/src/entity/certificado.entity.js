@@ -47,7 +47,7 @@ export const CertificadoSchema = new EntitySchema({
     },
     relations: {
         usuario: {
-            target: "User",
+            target: "Usuario",
             type: "many-to-one",
             joinColumn: { name: "usuarioId" },
             inverseSide: "certificados",

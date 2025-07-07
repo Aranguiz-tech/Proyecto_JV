@@ -1,73 +1,73 @@
-import { AppDataSource } from "../config/configDb.js";
-import { cancelarReunionService, createReunionService , getAllReunionesService  } from "../services/reunion.service.js";
+"use strict";
+import {
+  createReunionService,
+  getAllReunionesService,
+  cancelarReunionService,
+  deleteReunionService
+} from "../services/reunion.service.js";
+import {
+  handleErrorClient,
+  handleErrorServer,
+  handleSuccess
+} from "../handlers/responseHandlers.js";
 
-export const createReunion = async (req, res) => {
+export async function createReunion(req, res) {
   try {
-    const resultado = await createReunionService(req.body);
+    const { body } = req;
+    const [nuevaReunion, error] = await createReunionService(body);
 
-    if (resultado.error) {
-      return res.status(400).json({ message: resultado.error });
-    }
+    if (error)
+      return handleErrorClient(res, 400, "Error al crear reunión", error);
 
-    return res.status(201).json({
-      message: "Reunión creada correctamente",
-      reunion: resultado,
-    });
-
+    handleSuccess(res, 201, "Reunión creada correctamente", nuevaReunion);
   } catch (error) {
-    console.error("Error al crear nueva reunión:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    handleErrorServer(res, 500, error.message);
   }
-};
+}
 
-export const getAllReuniones = async (res) => {
+export async function getAllReuniones(req, res) {
   try {
-    const reuniones = await getAllReunionesService();
-    return res.status(200).json(reuniones);
+    const [reuniones, error] = await getAllReunionesService();
+
+    if (error)
+      return handleErrorClient(res, 404, "Error al obtener reuniones", error);
+
+    if (!reuniones.length)
+      return handleSuccess(res, 204, "No hay reuniones registradas");
+
+    handleSuccess(res, 200, "Reuniones obtenidas correctamente", reuniones);
   } catch (error) {
-    console.error("Error al obtener reuniones:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    handleErrorServer(res, 500, error.message);
   }
-};
+}
 
-
-export const deleteReunion = async (req, res) => {
-  const { id } = req.params;
-
+export async function cancelarReunion(req, res) {
   try {
-    const reunionRepo = AppDataSource.getRepository("Reunion");
-    const reunion = await reunionRepo.findOne({ where: { id } });
+    const { id } = req.params;
+    const { motivo } = req.body;
 
-    if (!reunion) {
-      return res.status(404).json({ message: "Reunión no encontrada" });
-    }
+    const [reunionCancelada, error] = await cancelarReunionService(id, motivo);
 
-    await reunionRepo.remove(reunion);
-    return res.status(200).json({ message: "Reunión eliminada correctamente" });
+    if (error)
+      return handleErrorClient(res, 400, "Error al cancelar reunión", error);
 
+    handleSuccess(res, 200, "Reunión cancelada correctamente", reunionCancelada);
   } catch (error) {
-    console.error("Error al eliminar la reunión:", error);
-    return res.status(500).json({ message: "Error interno del servidor" });
+    handleErrorServer(res, 500, error.message);
   }
-};
+}
 
-export const cancelarReunion = async (req, res) => {
-  const { id } = req.params;
-  const { motivo } = req.body;
-
+export async function deleteReunion(req, res) {
   try {
-    const resultado = await cancelarReunionService(id, motivo);
+    const { id } = req.params;
 
-    if (resultado.error) {
-      return res.status(400).json({ message: resultado.error });
-    }
+    const [reunionEliminada, error] = await deleteReunionService(id);
 
-    return res.status(200).json({
-      message: "Reunión cancelada correctamente",
-      reunion: resultado,
-    });
+    if (error)
+      return handleErrorClient(res, 404, "Error al eliminar reunión", error);
+
+    handleSuccess(res, 200, "Reunión eliminada correctamente", reunionEliminada);
   } catch (error) {
-    console.error("Error al cancelar reunión:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    handleErrorServer(res, 500, error.message);
   }
-};
+}

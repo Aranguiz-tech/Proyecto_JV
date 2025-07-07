@@ -17,8 +17,8 @@ router
 
 router
   .get("/", getUsers)
-  .get("/detail/", getUser)
-  .patch("/detail/", updateUser)
-  .delete("/detail/", deleteUser);
+  .get("/:rut", getUser)
+  .patch("/:rut", updateUser)
+  .delete("/:rut", deleteUser);
 
 export default router;

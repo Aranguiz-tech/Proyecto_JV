@@ -1,74 +1,93 @@
-import { AppDataSource } from "../config/configDB.js";
+import { AppDataSource } from "../config/configDb.js";
 
-export const createReunionService = async (datos) => {
-  const { asunto, fechaInicio } = datos;
+export async function createReunionService(datos) {
+  try {
+    const { asunto, fechaInicio } = datos;
 
-  if (!asunto || !fechaInicio) {
-    return { error: "Faltan campos obligatorios" };
+    if (!asunto || !fechaInicio ) {
+      return [null, "Faltan campos obligatorios"];
+    }
+
+    const reunionRepo = AppDataSource.getRepository("Reunion");
+
+    const existeReunion = await reunionRepo.findOne({ where: { fechaInicio } });
+    if (existeReunion) {
+      return [null, "Ya existe una reunión programada para esta fecha"];
+    }
+
+    const hoy = new Date();
+    const fecha = new Date(fechaInicio);
+
+    if (fecha < hoy) {
+      return [null, "La fecha de inicio no puede ser anterior a hoy"];
+    }
+
+    const nuevaReunion = reunionRepo.create({
+      asunto,
+      fechaInicio,
+      estado: "programada",
+    });
+
+    await reunionRepo.save(nuevaReunion);
+
+    return [nuevaReunion, null];
+
+  } catch (error) {
+    console.error("Error al crear reunión:", error);
+    return [null, "Error interno del servidor"];
   }
+}
 
-  const reunionRepo = AppDataSource.getRepository("Reunion");
-
-  const existeReunion = await reunionRepo.findOne({ where: { fechaInicio } });
-  if (existeReunion) {
-    return { error: "Ya existe una reunión programada para esta fecha" };
+export async function getAllReunionesService() {
+  try {
+    const reunionRepo = AppDataSource.getRepository("Reunion");
+    const reuniones = await reunionRepo.find({ order: { fechaInicio: "ASC" } });
+    return [reuniones, null];
+  } catch (error) {
+    console.error("Error al obtener reuniones:", error);
+    return [null, "Error interno del servidor"];
   }
+}
 
-  const hoy = new Date();
-  const fecha = new Date(fechaInicio);
+export async function cancelarReunionService(id, motivo) {
+  try {
+    const reunionRepo = AppDataSource.getRepository("Reunion");
 
-  if (fecha < hoy) {
-    return { error: "La fecha de inicio no puede ser anterior a hoy" };
+    const reunion = await reunionRepo.findOne({ where: { id } });
+    if (!reunion) {
+      return [null, "Reunión no encontrada"];
+    }
+
+    if (reunion.estado === "cancelada") {
+      return [null, "La reunión ya está cancelada"];
+    }
+
+    reunion.estado = "cancelada";
+    reunion.motivoCancelacion = motivo || "Sin motivo especificado";
+
+    await reunionRepo.save(reunion);
+
+    return [reunion, null];
+
+  } catch (error) {
+    console.error("Error al cancelar reunión:", error);
+    return [null, "Error interno del servidor"];
   }
+}
 
-  const nuevaReunion = reunionRepo.create({
-    asunto,
-    fechaInicio,
-    estado: "programada",
-  });
+export async function deleteReunionService(id) {
+  try {
+    const reunionRepo = AppDataSource.getRepository("Reunion");
 
-  await reunionRepo.save(nuevaReunion);
+    const reunion = await reunionRepo.findOne({ where: { id } });
+    if (!reunion) {
+      return [null, "Reunión no encontrada"];
+    }
 
-  return {
-    id: nuevaReunion.id,
-    asunto: nuevaReunion.asunto,
-    fechaInicio: nuevaReunion.fechaInicio,
-    estado: nuevaReunion.estado,
-  };
-};
-
-export const getAllReunionesService = async () => {
-  const reunionRepo = AppDataSource.getRepository("Reunion");
-
-  const reuniones = await reunionRepo.find({
-    order: { fechaInicio: "ASC" },
-  });
-
-  return reuniones;
-};
-
-export const cancelarReunionService = async (id, motivo) => {
-  const reunionRepo = AppDataSource.getRepository("Reunion");
-
-  const reunion = await reunionRepo.findOne({ where: { id } });
-  if (!reunion) {
-    return { error: "Reunión no encontrada" };
+    await reunionRepo.remove(reunion);
+    return [reunion, null];
+  } catch (error) {
+    console.error("Error al eliminar reunión:", error);
+    return [null, "Error interno del servidor"];
   }
-
-  if (reunion.estado === "cancelada") {
-    return { error: "La reunión ya está cancelada" };
-  }
-
-  reunion.estado = "cancelada";
-  reunion.motivoCancelacion = motivo || "Sin motivo especificado";
-
-  await reunionRepo.save(reunion);
-
-  return {
-    id: reunion.id,
-    asunto: reunion.asunto,
-    fechaInicio: reunion.fechaInicio,
-    estado: reunion.estado,
-    motivoCancelacion: reunion.motivoCancelacion
-  };
-};
+}

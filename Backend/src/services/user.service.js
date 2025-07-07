@@ -1,130 +1,85 @@
-"use strict";
-import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
+import User from "../entity/user.entity.js";
+import { encryptPassword } from "../helpers/bcrypt.helper.js";
 
 export async function getUserService(query) {
   try {
     const { rut, id, email } = query;
 
-    const userRepository = AppDataSource.getRepository(User);
+    const userRepo = AppDataSource.getRepository(User); 
 
-    const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
+    const usuario = await userRepo.findOne({
+      where: [{ rut }, { id }, { email }].filter(Boolean)
     });
 
-    if (!userFound) return [null, "Usuario no encontrado"];
+    if (!usuario) return [null, "Usuario no encontrado"];
 
-    const { password, ...userData } = userFound;
-
-    return [userData, null];
+    const { password, ...data } = usuario;
+    return [data, null];
   } catch (error) {
-    console.error("Error obtener el usuario:", error);
+    console.error("Error al buscar usuario:", error);
     return [null, "Error interno del servidor"];
   }
 }
 
 export async function getUsersService() {
   try {
-    const userRepository = AppDataSource.getRepository(User);
+    const userRepo = AppDataSource.getRepository(User);
 
-    const users = await userRepository.find();
+    const usuarios = await userRepo.find({
+      relations: ["hogar"] 
+    });
 
-    if (!users || users.length === 0) return [null, "No hay usuarios"];
+    const usuariosLimpios = usuarios.map(({ password, ...rest }) => rest);
 
-    const usersData = users.map(({ password, ...user }) => user);
-
-    return [usersData, null];
+    return [usuariosLimpios, null];
   } catch (error) {
-    console.error("Error al obtener a los usuarios:", error);
+    console.error("Error al listar usuarios:", error);
     return [null, "Error interno del servidor"];
   }
 }
 
-export async function updateUserService(query, body) {
+export async function updateUserService(rut, nuevosDatos) {
   try {
-    const { id, rut, email } = query;
+    const userRepo = AppDataSource.getRepository(User);
 
-    const userRepository = AppDataSource.getRepository(User);
+    const usuario = await userRepo.findOne({ where: { rut } });
+    if (!usuario) return [null, "Usuario no encontrado"];
 
-    const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
-    });
+    usuario.nombre = nuevosDatos.nombre || usuario.nombre;
+    usuario.apellido = nuevosDatos.apellido || usuario.apellido;
+    usuario.email = nuevosDatos.email || usuario.email;
+    usuario.telefono = nuevosDatos.telefono || usuario.telefono;
+    usuario.rol = nuevosDatos.rol || usuario.rol;
 
-    if (!userFound) return [null, "Usuario no encontrado"];
-
-    const existingUser = await userRepository.findOne({
-      where: [{ rut: body.rut }, { email: body.email }, { telefono: body.telefono }],
-    });
-
-    if (existingUser && existingUser.id !== userFound.id) {
-      return [null, "Ya existe un usuario con el mismo rut o email"];
+    if (nuevosDatos.password && nuevosDatos.password !== "") {
+      usuario.password = await encryptPassword(nuevosDatos.password);
     }
 
-    if (body.password) {
-      const matchPassword = await comparePassword(
-        body.password,
-        userFound.password,
-      );
+    await userRepo.save(usuario);
 
-      if (!matchPassword) return [null, "La contraseña no coincide"];
-    }
+    const { password, ...usuarioSinPassword } = usuario;
 
-    const dataUserUpdate = {
-      nombreCompleto: body.nombreCompleto,
-      rut: body.rut,
-      email: body.email,
-      telefono: body.telefono,
-      rol: body.rol,
-      updatedAt: new Date(),
-    };
-
-    if (body.newPassword && body.newPassword.trim() !== "") {
-      dataUserUpdate.password = await encryptPassword(body.newPassword);
-    }
-
-    await userRepository.update({ id: userFound.id }, dataUserUpdate);
-
-    const userData = await userRepository.findOne({
-      where: { id: userFound.id },
-    });
-
-    if (!userData) {
-      return [null, "Usuario no encontrado después de actualizar"];
-    }
-
-    const { password, ...userUpdated } = userData;
-
-    return [userUpdated, null];
+    return [usuarioSinPassword, null];
   } catch (error) {
-    console.error("Error al modificar un usuario:", error);
+    console.error("Error al actualizar usuario:", error);
     return [null, "Error interno del servidor"];
   }
 }
 
-export async function deleteUserService(query) {
+export async function deleteUserService(rut) {
   try {
-    const { id, rut, email } = query;
+    const userRepo = AppDataSource.getRepository(User);
 
-    const userRepository = AppDataSource.getRepository(User);
+    const usuario = await userRepo.findOne({ where: { rut } });
+    if (!usuario) return [null, "Usuario no encontrado"];
 
-    const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
-    });
+    await userRepo.remove(usuario);
 
-    if (!userFound) return [null, "Usuario no encontrado"];
-
-    if (userFound.rol === "administrador") {
-      return [null, "No se puede eliminar un usuario con rol de administrador"];
-    }
-
-    const userDeleted = await userRepository.remove(userFound);
-
-    const { password, ...dataUser } = userDeleted;
-
-    return [dataUser, null];
+    const { password, ...usuarioSinPassword } = usuario;
+    return [usuarioSinPassword, null];
   } catch (error) {
-    console.error("Error al eliminar un usuario:", error);
+    console.error("Error al eliminar usuario:", error);
     return [null, "Error interno del servidor"];
   }
 }

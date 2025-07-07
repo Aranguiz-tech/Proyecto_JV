@@ -1,94 +1,82 @@
-"use strict";
 import { EntitySchema } from "typeorm";
 
-const UserSchema = new EntitySchema({
-  name: "User",
-  tableName: "users",
+const User = new EntitySchema({
+  name: "Usuario",
+  tableName: "usuarios",
   columns: {
     id: {
-      type: "int",
       primary: true,
+      type: "int",
       generated: true,
-    },
-    nombreCompleto: {
-      type: "varchar",
-      length: 255,
-      nullable: false,
-    },
-    rut: {
-      type: "varchar",
-      length: 12,
-      nullable: false,
-      unique: true,
-    },
-    /* direccion: {
-      type: "varchar",
-      length: 100,
-      nullable: false,
-    },*/
-    email: {
-      type: "varchar",
-      length: 255,
-      nullable: false,
-      unique: true,
-    },
-    telefono: {
-      type: "varchar",
-      length: 15,
-      nullable: true,
     },
     rol: {
       type: "enum",
       enum: ["administrador", "jefe de hogar", "vecino"],
       nullable: false,
     },
-    password: {
+    rut: {
       type: "varchar",
+      length: 12,
+      unique: true,
       nullable: false,
     },
-    createdAt: {
-      type: "timestamp with time zone",
+    nombre: {
+      type: "varchar",
+      length: 50,
+      nullable: false,
+    },
+    apellido: {
+      type: "varchar",
+      length: 50,
+      nullable: false,
+    },
+    // direccion: {
+    //   type: "varchar",
+    //   length: 100,
+    //   nullable: false,
+    // },
+    telefono: {
+      type: "varchar",
+      length: 15,
+      nullable: true,
+    },
+    email: {
+      type: "varchar",
+      length: 100,
+      unique: true,
+      nullable: true,
+    },
+    password: {
+      type: "varchar",
+      length: 100,
+      nullable: true,
+    },
+    fechaCreacion: {
+      type: "timestamp",
       default: () => "CURRENT_TIMESTAMP",
       nullable: false,
     },
-    updatedAt: {
-      type: "timestamp with time zone",
+    fechaActualizacion: {
+      type: "timestamp",
       default: () => "CURRENT_TIMESTAMP",
       onUpdate: "CURRENT_TIMESTAMP",
       nullable: false,
     },
   },
   relations: {
-        hogar: {
-            target: "Hogar",
-            type: "many-to-one",
-            joinColumn: { name: "id_hogar" },
-            nullable: true, //cambiar más adelante
-            inverseSide: "usuarios", 
-        },
-        asistencias: {
-            target: "Asistencia",
-            type: "one-to-many",
-            inverseSide: "usuario", 
-        },
+    hogar: {
+      target: "Hogar",
+      type: "many-to-one",
+      joinColumn: { name: "id_hogar" },
+      nullable: false,
+      inverseSide: "usuarios",
     },
-  indices: [
-    {
-      name: "IDX_USER",
-      columns: ["id"],
-      unique: true,
+    /*asistencias: {
+      target: "Asistencia",
+      type: "one-to-many",
+      inverseSide: "usuario",
     },
-    {
-      name: "IDX_USER_RUT",
-      columns: ["rut"],
-      unique: true,
-    },
-    {
-      name: "IDX_USER_EMAIL",
-      columns: ["email"],
-      unique: true,
-    },
-  ],
+  */ },
 });
 
-export default UserSchema;
+export default User;
