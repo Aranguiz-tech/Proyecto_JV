@@ -30,3 +30,36 @@ export function formatPostUpdate(user) {
         createdAt: formatTempo(user.createdAt, "DD-MM-YYYY")
     };
 }
+
+// ---- Funciones para solicitudes ----
+
+export function formatSolicitudData(solicitud) {
+    return {
+        ...solicitud,
+        tipo: startCase(solicitud.tipo || ''),
+        motivo: startCase(solicitud.motivo || ''),
+        estado: startCase(solicitud.estado || ''),
+        justificacionDeRechazo: solicitud.justificacionDeRechazo || '',
+        fechaCreacion: solicitud.fechaCreacion
+            ? formatTempo(solicitud.fechaCreacion, "DD-MM-YYYY")
+            : '',
+        fechaActualizacion: solicitud.fechaActualizacion
+            ? formatTempo(solicitud.fechaActualizacion, "DD-MM-YYYY")
+            : '',
+    };
+}
+
+export function formatPostUpdateSolicitud(solicitud) {
+    return {
+        tipo: startCase(solicitud.tipo || ''),
+        motivo: startCase(solicitud.motivo || ''),
+        estado: startCase(solicitud.estado || ''),
+        justificacionDeRechazo: solicitud.justificacionDeRechazo || '',
+        fechaCreacion: solicitud.fechaCreacion
+            ? formatTempo(solicitud.fechaCreacion, "DD-MM-YYYY")
+            : '',
+        fechaActualizacion: solicitud.fechaActualizacion
+            ? formatTempo(solicitud.fechaActualizacion, "DD-MM-YYYY")
+            : '',
+    };
+}
