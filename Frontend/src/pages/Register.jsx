@@ -39,17 +39,27 @@ const patternRut = new RegExp(/^(?:(?:[1-9]\d{0}|[1-2]\d{1})(\.\d{3}){2}|[1-9]\d
 				title="Crea tu cuenta"
 				fields={[
 					{
-						label: "Nombre completo",
-						name: "nombreCompleto",
-						placeholder: "Diego Alexis Salazar Jara",
+						label: "Nombre",
+						name: "nombre",
+						placeholder: "Gabriel ",
                         fieldType: 'input',
 						type: "text",
 						required: true,
-						minLength: 15,
 						maxLength: 50,
                         pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
 						patternMessage: "Debe contener solo letras y espacios",
 					},
+                    {
+                        label: "apellido",
+                        name: "apellido",
+                        placeholder: "Aranguiz",
+                        fieldType: 'input',
+                        type: "text",
+                        required: true,
+                        maxLength: 50,
+                        pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+                        patternMessage: "Debe contener solo letras y espacios",
+                    },
                     {
                         label: "Correo electrónico",
                         name: "email",
@@ -57,7 +67,6 @@ const patternRut = new RegExp(/^(?:(?:[1-9]\d{0}|[1-2]\d{1})(\.\d{3}){2}|[1-9]\d
                         fieldType: 'input',
                         type: "email",
                         required: true,
-                        minLength: 15,
                         maxLength: 35,
                         errorMessageData: errorEmail,
                         validate: {
@@ -91,6 +100,15 @@ const patternRut = new RegExp(/^(?:(?:[1-9]\d{0}|[1-2]\d{1})(\.\d{3}){2}|[1-9]\d
                         pattern: /^[a-zA-Z0-9]+$/,
                         patternMessage: "Debe contener solo letras y números",
                     },
+                    {
+                        label: "Rol",
+                        name: "rol",
+                        fieldType: 'select',
+                        options: [
+                            { value: "vecino", label: "Vecino" },
+                            { value: "jefe de hogar", label: "Jefe de hogar" },
+                        ],
+                    }
 				]}
 				buttonText="Registrarse"
 				onSubmit={registerSubmit}
