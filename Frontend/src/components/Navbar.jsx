@@ -60,6 +60,18 @@ const Navbar = () => {
                     </li>
                     <li>
                         <NavLink 
+                            to="/reuniones" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Reuniones
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink 
                             to="/solicitudes" 
                             onClick={() => { 
                                 setMenuOpen(false); 
