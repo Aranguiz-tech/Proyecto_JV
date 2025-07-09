@@ -114,3 +114,4 @@ export default function Popup({ show, setShow, data, action }) {
         </div>
     );
 }
+

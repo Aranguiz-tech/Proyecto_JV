@@ -10,7 +10,6 @@ export const Solicitudschema = new EntitySchema({
             generated: true,
         },
         tipo: {
-            primary: true,
             type: "enum",
             enum: [
                 "Certificado de Residencia",
