@@ -53,6 +53,7 @@
   .title-table {
     margin: 0;
   }
+
   .top-table {
     flex-direction: column;
     gap: 10px;
@@ -65,15 +66,18 @@
   .filter-actions {
     margin-bottom: 10px;
   }
+
   .table-container {
     margin: 0;
     width: 352px;
     height: 500px;
   }
+
   .popup {
     width: 350px;
     height: 600px;
   }
+
   .popup .form {
     padding: 20px;
   }
@@ -95,4 +99,21 @@
   .delete-user-button {
     margin-right: 35px;
   }
+}
+
+.create-button {
+  background-color: #003366 !important;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.create-button:hover {
+  text-decoration: underline;
+  text-decoration-color: #00bfff;
 }

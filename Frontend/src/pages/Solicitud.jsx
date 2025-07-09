@@ -15,6 +15,7 @@ import {
   getSolicitudes,
   updateSolicitud,
   deleteSolicitud,
+  createSolicitud,
 } from '@services/solicitud.service.js';
 
 const Solicitud = () => {
@@ -25,6 +26,7 @@ const Solicitud = () => {
   const [filterTipo, setFilterTipo] = useState('');
   const [dataSolicitud, setDataSolicitud] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupMode, setPopupMode] = useState('edit');
 
   const fetchSolicitudes = async () => {
     setLoading(true);
@@ -57,26 +59,49 @@ const Solicitud = () => {
   }, []);
 
   const handleClickUpdate = () => {
-    if (dataSolicitud.length > 0) setIsPopupOpen(true);
+    if (dataSolicitud.length > 0) {
+      setPopupMode('edit');
+      setIsPopupOpen(true);
+    }
+  };
+
+  const handleClickCreate = () => {
+    setDataSolicitud([]);
+    setPopupMode('create');
+    setIsPopupOpen(true);
   };
 
   const handleUpdate = async (id, data) => {
-  console.log('Actualizando solicitud:', id, data);
-  try {
-    const result = await updateSolicitud(id, data);
-    if (result?.message) {
-      setError(result.message);
-    } else {
-      await fetchSolicitudes();
-      setIsPopupOpen(false);
-      setDataSolicitud([]);
+    try {
+      const result = await updateSolicitud(id, data);
+      if (result?.message) {
+        setError(result.message);
+      } else {
+        await fetchSolicitudes();
+        setIsPopupOpen(false);
+        setDataSolicitud([]);
+      }
+    } catch (err) {
+      setError('Error al actualizar la solicitud');
+      console.error(err);
     }
-  } catch (err) {
-    setError('Error al actualizar la solicitud');
-    console.error(err);
-  }
-};
+  };
 
+  const handleCreate = async (data) => {
+    try {
+      const result = await createSolicitud(data);
+      if (result?.message) {
+        setError(result.message);
+      } else {
+        await fetchSolicitudes();
+        setIsPopupOpen(false);
+        setDataSolicitud([]);
+      }
+    } catch (err) {
+      setError('Error al crear la solicitud');
+      console.error(err);
+    }
+  };
 
   const handleDelete = async (data) => {
     if (data.length === 0) return;
@@ -119,6 +144,13 @@ const Solicitud = () => {
               placeholder="Filtrar por tipo"
             />
             <button
+              className="create-button"
+              onClick={handleClickCreate}
+              title="Solicitar documento"
+            >
+              Solicitar documento
+            </button>
+            <button
               onClick={handleClickUpdate}
               disabled={dataSolicitud.length === 0}
               title={dataSolicitud.length === 0 ? 'Selecciona una solicitud para editar' : 'Editar solicitud'}
@@ -157,18 +189,26 @@ const Solicitud = () => {
         />
       </div>
 
-    <PopupSolicitud
-      show={isPopupOpen}
-      setShow={setIsPopupOpen}
-      data={dataSolicitud}
-      action={async (editedData) => {
-      if (!editedData) return;
-        const { id, tipo, motivo } = editedData;
-        const dataToUpdate = { tipo, motivo };
-        await handleUpdate(id, dataToUpdate);
-     }}
-    />
-
+      <PopupSolicitud
+        show={isPopupOpen}
+        setShow={setIsPopupOpen}
+        data={dataSolicitud}
+        action={async (formData) => {
+          if (!formData) return;
+          if (popupMode === 'edit') {
+            await handleUpdate(formData.id, {
+              tipo: formData.tipo,
+              motivo: formData.motivo,
+            });
+          } else {
+            await handleCreate({
+              tipo: formData.tipo,
+              motivo: formData.motivo,
+            });
+          }
+        }}
+        mode={popupMode}
+      />
     </div>
   );
 };
