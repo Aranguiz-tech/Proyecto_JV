@@ -34,7 +34,7 @@ export const userBodyValidation = Joi.object({
   apellido: Joi.string().min(3).max(25).pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/).messages({
     "string.pattern.base": "El apellido solo puede contener letras y espacios.",
   }),
-  email: Joi.string().email().min(15).max(35).custom(domainEmailValidator).messages({
+  email: Joi.string().email().max(35).custom(domainEmailValidator).messages({
     "string.email": "El correo debe finalizar en @gmail.cl, @gmail.com, @hotmail.cl o @hotmail.com.",
   }),
   password: Joi.string().min(8).max(26).pattern(/^[a-zA-Z0-9]+$/).messages({

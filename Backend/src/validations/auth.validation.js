@@ -1,18 +1,16 @@
-"use strict";
 import Joi from "joi";
 
-const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@gmail.cl")) {
-    return helper.message(
-      "El correo electrónico debe finalizar en @gmail.cl."
-    );
+export const domainEmailValidator = (value, helper) => {
+  const dominiosValidos = ["@gmail.cl", "@gmail.com", "@hotmail.cl", "@hotmail.com"];
+  const valido = dominiosValidos.some((dominio) => value.endsWith(dominio));
+  if (!valido) {
+    return helper.message("El correo debe finalizar en @gmail.cl, @gmail.com, @hotmail.cl o @hotmail.com.");
   }
   return value;
 };
 
 export const authValidation = Joi.object({
   email: Joi.string()
-    .min(15)
     .max(35)
     .email()
     .required()
@@ -21,7 +19,6 @@ export const authValidation = Joi.object({
       "any.required": "El correo electrónico es obligatorio.",
       "string.base": "El correo electrónico debe ser de tipo texto.",
       "string.email": "El correo electrónico debe finalizar en @gmail.cl.",
-      "string.min": "El correo electrónico debe tener al menos 15 caracteres.",
       "string.max": "El correo electrónico debe tener como máximo 35 caracteres.",
     })
     .custom(domainEmailValidator, "Validación dominio email"),
@@ -43,18 +40,11 @@ export const authValidation = Joi.object({
 });
 
 export const registerValidation = Joi.object({
-  nombreCompleto: Joi.string()
-    .min(15)
-    .max(50)
-    .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
-    .required()
-    .messages({
-      "string.empty": "El nombre completo no puede estar vacío.",
-      "any.required": "El nombre completo es obligatorio.",
-      "string.base": "El nombre completo debe ser de tipo texto.",
-      "string.min": "El nombre completo debe tener al menos 15 caracteres.",
-      "string.max": "El nombre completo debe tener como máximo 50 caracteres.",
-      "string.pattern.base": "El nombre completo solo puede contener letras y espacios.",
+    nombre: Joi.string().min(3).max(25).pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/).messages({
+      "string.pattern.base": "El nombre solo puede contener letras y espacios.",
+    }),
+    apellido: Joi.string().min(3).max(25).pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/).messages({
+      "string.pattern.base": "El apellido solo puede contener letras y espacios.",
     }),
     rut: Joi.string()
     .min(9)
@@ -68,20 +58,12 @@ export const registerValidation = Joi.object({
       "string.max": "El rut debe tener como máximo 12 caracteres.",
       "string.pattern.base": "Formato rut inválido, debe ser xx.xxx.xxx-x o xxxxxxxx-x.",
     }),
-  email: Joi.string()
-    .min(15)
-    .max(35)
-    .email()
-    .required()
-    .messages({
-      "string.empty": "El correo electrónico no puede estar vacío.",
-      "any.required": "El correo electrónico es obligatorio.",
-      "string.base": "El correo electrónico debe ser de tipo texto.",
-      "string.email": "El correo electrónico debe finalizar en @gmail.cl.",
-      "string.min": "El correo electrónico debe tener al menos 15 caracteres.",
-      "string.max": "El correo electrónico debe tener como máximo 35 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+  email: Joi.string().email().max(35).custom(domainEmailValidator).messages({
+    "string.email": "El correo debe finalizar en @gmail.cl, @gmail.com, @hotmail.cl o @hotmail.com.",
+  }),
+    telefono: Joi.string().pattern(/^\d{9}$/).messages({
+      "string.pattern.base": "El teléfono debe tener exactamente 9 dígitos.",
+    }),
   password: Joi.string()
     .min(8)
     .max(26)
@@ -95,8 +77,12 @@ export const registerValidation = Joi.object({
       "string.max": "La contraseña debe tener como máximo 26 caracteres.",
       "string.pattern.base": "La contraseña solo puede contener letras y números.",
     }),
-})
-  .unknown(false)
-  .messages({
-  "object.unknown": "No se permiten propiedades adicionales.",
-});
+      rol: Joi.string().valid("vecino", "jefe de hogar", "administrador").messages({
+        "any.only": "El rol debe ser 'vecino', 'jefe de hogar' o 'administrador'.",
+      }),
+        id_hogar: Joi.number().integer().positive().messages({
+          "number.base": "El id debe ser un número.",
+          "number.integer": "El id debe ser un número entero.",
+          "number.positive": "El id debe ser positivo.",
+        }),
+    })

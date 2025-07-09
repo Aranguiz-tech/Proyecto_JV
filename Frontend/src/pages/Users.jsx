@@ -35,7 +35,8 @@ const Users = () => {
   }, [setDataUser]);
 
   const columns = [
-    { title: "Nombre", field: "nombreCompleto", width: 350, responsive: 0 },
+    { title: "Nombre", field: "nombre", width: 350, responsive: 0 },
+    { title: "Apellido", field: "apellido", width: 350, responsive: 1 },
     { title: "Correo electrónico", field: "email", width: 300, responsive: 3 },
     { title: "Rut", field: "rut", width: 150, responsive: 2 },
     { title: "Rol", field: "rol", width: 200, responsive: 2 },
@@ -70,7 +71,8 @@ const Users = () => {
           columns={columns}
           filter={filterRut}
           dataToFilter={'rut'}
-          initialSortName={'nombreCompleto'}
+          initialSortName={'nombre'}
+          initialSortLastname={'apellido'}
           onSelectionChange={handleSelectionChange}
         />
       </div>

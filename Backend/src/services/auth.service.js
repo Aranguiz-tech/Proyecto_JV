@@ -1,5 +1,6 @@
 "use strict";
 import User from "../entity/user.entity.js";
+import Hogar from "../entity/hogar.entity.js";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
@@ -31,7 +32,8 @@ export async function loginService(user) {
     }
 
     const payload = {
-      nombreCompleto: userFound.nombreCompleto,
+      nombre: userFound.nombre,
+      apellido: userFound.apellido,
       email: userFound.email,
       rut: userFound.rut,
       rol: userFound.rol,
@@ -52,44 +54,73 @@ export async function loginService(user) {
 export async function registerService(user) {
   try {
     const userRepository = AppDataSource.getRepository(User);
+    const hogarRepository = AppDataSource.getRepository(Hogar);
 
-    const { nombreCompleto, rut, email, telefono } = user;
+    const nombre = user.nombre;
+    const apellido = user.apellido;
+    const rut = user.rut;
+    const email = user.email;
+    const telefono = user.telefono;
+    const password = user.password;
+    const id_hogar = user.id_hogar;
+    const rol = user.rol;
 
     const createErrorMessage = (dataInfo, message) => ({
       dataInfo,
-      message
+      message,
     });
-
+ 
     const existingEmailUser = await userRepository.findOne({
-      where: {
-        email,
-      },
+      where: { email },
     });
-    
-    if (existingEmailUser) return [null, createErrorMessage("email", "Correo electrónico en uso")];
-
+    if (existingEmailUser) {
+      return [null, createErrorMessage("email", "Correo electrónico en uso")];
+    }
+  
     const existingRutUser = await userRepository.findOne({
-      where: {
-        rut,
-      },
+      where: { rut },
     });
+    if (existingRutUser) {
+      return [null, createErrorMessage("rut", "Rut ya asociado a una cuenta")];
+    }
+ 
+    const hogarExistente = await hogarRepository.findOne({
+      where: { id: id_hogar },
+    });
+    if (!hogarExistente) {
+      return [null, createErrorMessage("id_hogar", "El hogar asociado no existe")];
+    }
+    
+    if (rol === "jefe de hogar") {
+      const jefeExistente = await userRepository.findOne({
+        where: {
+          rol: "jefe de hogar",
+          hogar: { id: id_hogar }
+        },
+        relations: ["hogar"]
+      });
 
-    if (existingRutUser) return [null, createErrorMessage("rut", "Rut ya asociado a una cuenta")];
-
+      if (jefeExistente) {
+        return [null, createErrorMessage("rol", "Este hogar ya tiene un jefe de hogar asignado")];
+      }
+    }
+    
     const newUser = userRepository.create({
-      nombreCompleto,
+      nombre,
+      apellido,
       email,
       telefono,
       rut,
-      password: await encryptPassword(user.password),
-      rol: "usuario",
+      password: await encryptPassword(password),
+      rol,
+      hogar: { id: id_hogar },
     });
 
     await userRepository.save(newUser);
 
-    const { password, ...dataUser } = newUser;
-
+    const { password: _, ...dataUser } = newUser;
     return [dataUser, null];
+
   } catch (error) {
     console.error("Error al registrar un usuario", error);
     return [null, "Error interno del servidor"];
