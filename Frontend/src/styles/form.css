@@ -195,7 +195,10 @@ input[name='rut'] {
 	background-image: url('../assets/IdentityCardIcon.svg');
 }
 
-input[name='nombreCompleto'] {
+input[name='nombre'] {
+	background-image: url('../assets/PersonIcon.svg');
+}
+input[name="apellido"] {
 	background-image: url('../assets/PersonIcon.svg');
 }
 

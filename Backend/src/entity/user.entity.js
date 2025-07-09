@@ -70,6 +70,7 @@ const User = new EntitySchema({
       joinColumn: { name: "id_hogar" },
       nullable: false,
       inverseSide: "usuarios",
+      onDelete: "CASCADE" 
     },
     /*asistencias: {
       target: "Asistencia",

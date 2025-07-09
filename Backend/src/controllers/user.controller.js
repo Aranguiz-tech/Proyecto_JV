@@ -67,17 +67,15 @@ export async function updateUser(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
-
 export async function deleteUser(req, res) {
   try {
-    const { rut, id, email } = req.query;
+    const { rut } = req.params;
 
-    const { error } = userQueryValidation.validate({ rut, id, email });
+    const { error } = userQueryValidation.validate({ rut });
     if (error)
       return handleErrorClient(res, 400, "Error en la consulta", error.message);
 
-    const [deletedUser, deleteError] = await deleteUserService({ rut, id, email });
-
+    const [deletedUser, deleteError] = await deleteUserService(rut);
     if (deleteError)
       return handleErrorClient(res, 404, "Error eliminando al usuario", deleteError);
 
