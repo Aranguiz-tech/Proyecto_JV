@@ -3,7 +3,7 @@ import { formatUserData } from '@helpers/formatData.js';
 
 export async function getUsers() {
     try {
-        const { data } = await axios.get('/usuario/');
+        const { data } = await axios.get('/user/');
         const formattedData = data.data.map(formatUserData);
         return formattedData;
     } catch (error) {
