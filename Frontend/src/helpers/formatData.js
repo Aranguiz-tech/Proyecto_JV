@@ -12,7 +12,6 @@ export function formatUserData(user) {
         createdAt: formatTempo(user.createdAt, "DD-MM-YYYY")
     };
 }
-
 export function convertirMinusculas(obj) {
     for (let key in obj) {
         if (typeof obj[key] === 'string') {
@@ -63,5 +62,25 @@ export function formatPostUpdateSolicitud(solicitud) {
         fechaActualizacion: solicitud.fechaActualizacion
             ? formatTempo(solicitud.fechaActualizacion, "DD-MM-YYYY")
             : '',
+    };
+}
+
+export function formatCrearReunion(reunion) {
+    return { 
+        ...reunion,
+        asunto: asunto.descripcion || '',
+        fecha: reunion.fecha ? formatTempo(reunion.fecha, "DD-MM-YYYY") : '',
+    };
+}
+export function formatCancelarReunion(reunion) {
+    return {
+        motivo: reunion.motivo || '',
+    };
+}
+export function formatGetReunion(reunion) {
+    return {
+        ...reunion,
+        asunto: reunion.asunto || '',
+        fecha: reunion.fecha ? formatTempo(reunion.fecha, "DD-MM-YYYY") : '',
     };
 }
