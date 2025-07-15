@@ -67,11 +67,11 @@ export function formatPostUpdateSolicitud(solicitud) {
 
 export function formatCrearReunion(reunion) {
     return { 
-        ...reunion,
-        asunto: asunto.descripcion || '',
-        fecha: reunion.fecha ? formatTempo(reunion.fecha, "DD-MM-YYYY") : '',
+        asunto: reunion.asunto || '',
+        fecha: reunion.fechaInicio ? formatTempo(reunion.fechaInicio, "DD-MM-YYYY") : '',
     };
 }
+
 export function formatCancelarReunion(reunion) {
     return {
         motivo: reunion.motivo || '',
@@ -84,3 +84,4 @@ export function formatGetReunion(reunion) {
         fecha: reunion.fecha ? formatTempo(reunion.fecha, "DD-MM-YYYY") : '',
     };
 }
+

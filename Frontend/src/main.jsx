@@ -8,6 +8,7 @@ import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
+import Reuniones from '@pages/Reuniones';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             <Users />
           </ProtectedRoute>
         )
+      },
+      {
+        path: 'reuniones',
+        element: <Reuniones />
       },
       {
         path: 'solicitudes',

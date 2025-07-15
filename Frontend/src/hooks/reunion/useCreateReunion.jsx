@@ -1,30 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createReunion } from '@services/reunion.service.js';
 
-const usecreateReunion = () => {
-    const [Reunion, setcreateReunion] = useState('');
+const useCreateReunion = () => {
+  const [reunion, setReunion] = useState(null);
 
-     const fetchcreateReunion = async () => {
-        try {
-           const response = await createReunion();
-           const formattedData = response.map(reunion => ({
-            asunto: reunion.asunto,
-            fecha: reunion.fecha 
-        }));
-        dataLogged(formattedData);
-        setcreateReunion(formattedData);
+  const fetchCreateReunion = async (data) => {
+    try {
+      const nueva = await createReunion(data); 
+      setReunion(nueva);
     } catch (error) {
-        console.error("Error: ", error);
+      console.error("Error al crear reunión:", error);
     }
-};
-    useEffect(() => {
-        fetchcreateReunion();
-    }, []);
-    return {
-    Reunion,
-    fetchcreateReunion,
-    setcreateReunion,
-    };
+  };
+
+  return {
+    reunion,
+    fetchCreateReunion,
+    setReunion,
+  };
 };
 
-export default usecreateReunion;
+export default useCreateReunion;
