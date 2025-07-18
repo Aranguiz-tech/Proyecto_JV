@@ -65,23 +65,3 @@ export function formatPostUpdateSolicitud(solicitud) {
     };
 }
 
-export function formatCrearReunion(reunion) {
-    return { 
-        asunto: reunion.asunto || '',
-        fecha: reunion.fechaInicio ? formatTempo(reunion.fechaInicio, "DD-MM-YYYY") : '',
-    };
-}
-
-export function formatCancelarReunion(reunion) {
-    return {
-        motivo: reunion.motivo || '',
-    };
-}
-export function formatGetReunion(reunion) {
-    return {
-        ...reunion,
-        asunto: reunion.asunto || '',
-        fecha: reunion.fecha ? formatTempo(reunion.fecha, "DD-MM-YYYY") : '',
-    };
-}
-

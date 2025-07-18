@@ -1,35 +1,45 @@
 import axios from './root.service.js';
-import { formatCancelarReunion, formatCrearReunion, formatGetReunion} from '@helpers/formatData.js';
 
 export async function createReunion(reunionData) {
-    try {
-        const { data } = await axios.post('/reunion/', reunionData);
-        const formattedData = formatCrearReunion(data.data); 
-        return formattedData;
-    } catch (error) {
-        console.error("Error en createReunion:", error);
-        return error.response?.data || null;
-        
-    }
-    
+  try {
+    const { data } = await axios.post('/reunion/', reunionData);
+    console.log("Reunión creada:", data.data);
+    return data;
+  } catch (error) {
+    console.error("Error en createReunion:", error);
+    return error.response?.data || null;
+  }
 }
+
 export async function getReuniones() {
-    try {
-        const { data } = await axios.get('/reunion/');
-        const formattedData = data.data.map(formatGetReunion);
-        console.log("data", data, formattedData);
-        return formattedData;
-    } catch (error) {
-        return error.response.data;
-    }
+  try {
+    const { data } = await axios.get('/reunion/');
+    console.log("Reuniones obtenidas:", data.data);
+    return data.data;
+  } catch (error) {
+    console.error("Error en getReuniones:", error);
+    return error.response?.data || null;
+  }
 }
+
 export async function deleteReunion(id) {
-    try {
-        const { data } = await axios.delete(`/reunion/${id}`);
-        const formattedData = formatCancelarReunion(data.data);
-        return formattedData;
-    } catch (error) {
-        console.error("Error al cancelar reunión:", error);
-        return error.response?.data || null;
-    }
+  try {
+    const { data } = await axios.delete(`/reunion/${id}`);
+    console.log("Reunión eliminada:", data.data);
+    return data.data;
+  } catch (error) {
+    console.error("Error al eliminar reunión:", error);
+    return error.response?.data || null;
+  }
+}
+
+export async function cancelarReunion(id, motivo) {
+  try {
+    const { data } = await axios.patch(`/reunion/cancelar/${id}`, { motivo });
+    console.log("Reunión cancelada:", data.data);
+    return data.data;
+  } catch (error) {
+    console.error("Error al cancelar reunión:", error);
+    return error.response?.data || null;
+  }
 }

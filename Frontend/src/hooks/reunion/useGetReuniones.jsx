@@ -1,40 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getReuniones } from '@services/reunion.service.js';
-const useReunion = () => {
-    const [reuniones, setReuniones] = useState([]);
 
-    const fetchReunion = async () => {
-        try {
-           const response = await getReuniones();
-           const formattedData = response.map(reunion => ({
-            asunto: reunion.asunto,
-            fecha: reunion.fecha 
-        }));
-        dataLogged(formattedData);
-        setReuniones(formattedData);
+const useGetReuniones = () => {
+  const [reuniones, setReuniones] = useState([]);
+
+  const fetchReuniones = async () => {
+    try {
+      const response = await getReuniones();
+      setReuniones(response);
     } catch (error) {
-        console.error("Error: ", error);
+      console.error("Error al obtener reuniones:", error);
     }
-};
-    useEffect(() => {
-        fetchReunion();
-    }, []);
+  };
 
-    const dataLogged = (formattedData) => {
-        try {
-            const { rut } = JSON.parse(sessionStorage.getItem('usuario'));
-            for(let i = 0; i < formattedData.length ; i++) {
-                if(formattedData[i].rut === rut) {
-                    formattedData.splice(i, 1);
-                    break;
-                }
-            }
-        } catch (error) {
-            console.error("Error: ", error)
-        }
-    };
-
-    return { reuniones, fetchUsers, setReuniones };
+  return {
+    reuniones,
+    fetchReuniones,
+    setReuniones,
+  };
 };
 
-export default useReunion;
+export default useGetReuniones;
