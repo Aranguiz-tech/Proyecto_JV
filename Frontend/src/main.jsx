@@ -10,6 +10,7 @@ import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
 import Reuniones from '@pages/Reuniones/Reuniones';
 import CrearReunion from '@pages/Reuniones/CrearReunion';
+import VerReuniones from '@pages/Reuniones/VerReuniones';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
       path: 'reuniones/crear',
       element: <CrearReunion />
+    },
+        {
+      path: 'reuniones/ver',
+      element: <VerReuniones />
     },
 
       {
