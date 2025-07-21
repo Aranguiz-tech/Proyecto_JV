@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Form from './Form';
 import '@styles/popup.css';
 import CloseIcon from '@assets/XIcon.svg';
@@ -16,21 +17,62 @@ const motivosSolicitud = [
   { value: "para consultar", label: "para consultar" },
 ];
 
-export default function PopupSolicitud({ show, setShow, data, action, mode = 'edit' }) {
-  const solicitudData = data && data.length > 0 ? data[0] : {};
+export default function PopupSolicitud({ show, setShow, data, action, mode = 'edit', usuarioId }) {
+  const solicitudData = data && typeof data === 'object' ? data : {};
+
+  const [archivo, setArchivo] = useState(null);
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setArchivo(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = (formData) => {
-    const payload = {
-      tipo: formData.tipo,
-      motivo: formData.motivo,
-    };
+    const dataToSend = new FormData();
+    dataToSend.append('tipo', formData.tipo);
+    dataToSend.append('motivo', formData.motivo);
 
-    if (mode === 'edit') {
-      payload.id = solicitudData.id;
+    if (archivo) {
+      dataToSend.append('archivo', archivo);
     }
 
-    action(payload);
+    if (mode === 'edit' && solicitudData.id) {
+      dataToSend.append('id', solicitudData.id);
+    }
+
+    if (usuarioId) {
+      dataToSend.append('usuarioId', usuarioId);
+    }
+
+    action(dataToSend);
   };
+
+  const fields = [
+    {
+      label: "Tipo",
+      name: "tipo",
+      defaultValue: solicitudData.tipo || "",
+      fieldType: 'select',
+      options: tiposDocumentos,
+      required: true,
+    },
+    {
+      label: "Motivo",
+      name: "motivo",
+      defaultValue: solicitudData.motivo || "",
+      fieldType: 'select',
+      options: motivosSolicitud,
+      required: true,
+    },
+    {
+      label: "Adjuntar archivo",
+      name: "archivo",
+      fieldType: "file",
+      required: false,
+      onChange: handleFileChange,
+    },
+  ];
 
   return (
     <div>
@@ -42,27 +84,11 @@ export default function PopupSolicitud({ show, setShow, data, action, mode = 'ed
             </button>
             <Form
               title={mode === 'edit' ? "Editar solicitud" : "Crear solicitud"}
-              fields={[
-                {
-                  label: "Tipo",
-                  name: "tipo",
-                  defaultValue: solicitudData.tipo || "",
-                  fieldType: 'select',
-                  options: tiposDocumentos,
-                  required: true,
-                },
-                {
-                  label: "Motivo",
-                  name: "motivo",
-                  defaultValue: solicitudData.motivo || "",
-                  fieldType: 'select',
-                  options: motivosSolicitud,
-                  required: true,
-                },
-              ]}
+              fields={fields}
               onSubmit={handleSubmit}
               buttonText={mode === 'edit' ? "Guardar cambios" : "Crear solicitud"}
               backgroundColor={'#fff'}
+              encType="multipart/form-data"
             />
           </div>
         </div>

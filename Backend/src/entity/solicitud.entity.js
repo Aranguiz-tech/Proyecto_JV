@@ -29,6 +29,14 @@ export const Solicitudschema = new EntitySchema({
             ],
             default: "para consultar"
         },
+        archivoNombre: {
+            type: "varchar",
+            nullable: true,
+        },
+        archivoRuta: {
+            type: "varchar",
+            nullable: true,
+        },
         estado: {
             type: "enum",
             enum: ["pendiente", "aprobado", "rechazado"],
@@ -51,4 +59,15 @@ export const Solicitudschema = new EntitySchema({
         },
        
     },
+    relations: {
+        usuario: {
+            type: "many-to-one",
+            target: "Usuario",
+            joinColumn: { name: "usuarioId" },
+            nullable: false,
+            inverseSide: "solicitudes",
+            onDelete: "CASCADE",
+        },
+
+    }
 });

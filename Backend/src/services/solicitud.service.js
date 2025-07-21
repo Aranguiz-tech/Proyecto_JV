@@ -3,10 +3,16 @@ import { AppDataSource } from "../config/configDb.js";
 
 export async function createSolicitudService(data) {
   try {
-    const { tipo, motivo } = data;
+    const { tipo, motivo, usuario, archivoNombre, archivoRuta } = data;
     const SolRepo = AppDataSource.getRepository("Solicitud");
 
-    const nuevaSolicitud = SolRepo.create({ tipo, motivo });
+    const nuevaSolicitud = SolRepo.create({
+      tipo,
+      motivo,
+      archivoNombre,
+      archivoRuta,
+      usuario,
+    });
 
     await SolRepo.save(nuevaSolicitud);
 
@@ -16,6 +22,24 @@ export async function createSolicitudService(data) {
     return [null, "Error del servidor"];
   }
 }
+
+export async function getSolicitudesPorUsuarioService(usuarioId) {
+  try {
+    const solicitudRepo = dataSource.getRepository("Solicitud");
+
+    const solicitudes = await solicitudRepo.find({
+      where: {
+        usuario: { id: usuarioId },
+      },
+      relations: ["usuario"],
+    });
+
+    return [solicitudes, null];
+  } catch (error) {
+    return [null, error.message];
+  }
+}
+
 
 export async function getSolicitudPorIdService(id) {
   try {
@@ -67,7 +91,7 @@ export async function deleteSolicitudService(id) {
 
 export async function updateSolicitudService(id, data) {
   try {
-    const { tipo, motivo } = data;
+    const { tipo, motivo, archivoNombre, archivoRuta } = data;
     const SolRepo = AppDataSource.getRepository("Solicitud");
 
     const solicitud = await SolRepo.findOne({ where: { id } });
@@ -76,6 +100,8 @@ export async function updateSolicitudService(id, data) {
 
     solicitud.tipo = tipo;
     solicitud.motivo = motivo;
+    solicitud.archivoNombre = archivoNombre;
+    solicitud.archivoRuta = archivoRuta;
 
     const actualizada = await SolRepo.save(solicitud);
 

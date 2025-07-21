@@ -32,6 +32,8 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
             {fields.map((field, index) => (
                 <div className="container_inputs" key={index}>
                     {field.label && <label htmlFor={field.name}>{field.label}</label>}
+                    
+                    {/* Input simple */}
                     {field.fieldType === 'input' && (
                         <input
                             {...register(field.name, {
@@ -43,14 +45,20 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             })}
                             name={field.name}
                             placeholder={field.placeholder}
-                            type={field.type === 'password' && field.name === 'password' ? (showPassword ? 'text' : 'password') :
-                                field.type === 'password' && field.name === 'newPassword' ? (showNewPassword ? 'text' : 'password') :
-                                field.type}
+                            type={
+                                field.type === 'password' && field.name === 'password'
+                                    ? (showPassword ? 'text' : 'password')
+                                    : field.type === 'password' && field.name === 'newPassword'
+                                    ? (showNewPassword ? 'text' : 'password')
+                                    : field.type
+                            }
                             defaultValue={field.defaultValue || ''}
                             disabled={field.disabled}
                             onChange={field.onChange}
                         />
                     )}
+
+                    {/* Textarea */}
                     {field.fieldType === 'textarea' && (
                         <textarea
                             {...register(field.name, {
@@ -67,6 +75,8 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             onChange={field.onChange}
                         />
                     )}
+
+                    {/* Select */}
                     {field.fieldType === 'select' && (
                         <select
                             {...register(field.name, {
@@ -86,6 +96,21 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             ))}
                         </select>
                     )}
+
+                    {/* File */}
+                    {field.fieldType === 'file' && (
+                        <input
+                            type="file"
+                            name={field.name}
+                            disabled={field.disabled}
+                            onChange={(e) => {
+                                field.onChange?.(e);
+                            }}
+                            
+                        />
+                    )}
+
+                    {/* Iconos para password */}
                     {field.type === 'password' && field.name === 'password' && (
                         <span className="toggle-password-icon" onClick={togglePasswordVisibility}>
                             <img src={showPassword ? ViewIcon : HideIcon} />
@@ -96,11 +121,14 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             <img src={showNewPassword ? ViewIcon : HideIcon} />
                         </span>
                     )}
+
+                    {/* Mensajes de error */}
                     <div className={`error-message ${errors[field.name] || field.errorMessageData ? 'visible' : ''}`}>
                         {errors[field.name]?.message || field.errorMessageData || ''}
                     </div>
                 </div>
             ))}
+
             {buttonText && <button type="submit">{buttonText}</button>}
             {footerContent && <div className="footerContent">{footerContent}</div>}
         </form>
