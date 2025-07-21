@@ -11,6 +11,9 @@ import Solicitud from '@pages/Solicitud';
 import Reuniones from '@pages/Reuniones/Reuniones';
 import CrearReunion from '@pages/Reuniones/CrearReunion';
 import VerReuniones from '@pages/Reuniones/VerReuniones';
+import Hogares from '@pages/Hogares/Hogares';
+import CrearHogares from '@pages/Hogares/CrearHogares';
+import VerHogares from '@pages/Hogares/VerHogares';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -31,7 +34,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         )
       },
-    {
+      {
       path: 'reuniones',
       element: <Reuniones />
     },
@@ -47,6 +50,18 @@ const router = createBrowserRouter([
       {
         path: 'solicitudes',
         element: <Solicitud />
+      },
+       {
+        path: 'hogares',
+        element: <Hogares />
+      },
+      {
+        path: 'hogares/crear',
+        element: <CrearHogares />
+      },
+       {
+        path: 'hogares/ver',
+        element: <VerHogares />
       }
     ]
   },

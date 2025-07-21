@@ -37,9 +37,10 @@ const Users = () => {
   const columns = [
     { title: "Nombre", field: "nombre", width: 200, responsive: 0 },
     { title: "Apellido", field: "apellido", width: 200, responsive: 1 },
-    { title: "Correo electrónico", field: "email", width: 300, responsive: 3 },
+    { title: "Correo electrónico", field: "email", width: 200, responsive: 3 },
     { title: "Rut", field: "rut", width: 150, responsive: 2 },
-    { title: "Rol", field: "rol", width: 200, responsive: 2 },
+    { title: "Rol", field: "rol", width: 100, responsive: 2 },
+    { title: "dirección", field: "direccion", width: 300, responsive: 3 },
   ];
 
   return (

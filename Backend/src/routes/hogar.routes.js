@@ -12,14 +12,14 @@ import { isAdmin } from "../middlewares/authorization.middleware.js";
 
 const router = Router();
 
-router.use(authenticateJwt);
-router.use(isAdmin);
+router.get("/", getAllHogares);
+router.get("/:id", getHogar);
 
-router
-  .get("/", getAllHogares) 
-  .get("/:id", getHogar)
-  .post("/", createHogar)
-  .patch("/:id", updateHogar)
-  .delete("/:id", deleteHogar);
+router.use(authenticateJwt); 
+
+router.post("/", isAdmin, createHogar);
+router.patch("/:id", isAdmin, updateHogar);
+router.delete("/:id", isAdmin, deleteHogar);
+
 
 export default router;
