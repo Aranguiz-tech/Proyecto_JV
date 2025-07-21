@@ -1,0 +1,18 @@
+
+.boton-verde-suave {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 250px;
+  min-height: 80px;
+  background-color: rgba(236, 241, 236, 0.753); 
+  color: #121812;
+  border: 2px solid #2E7D32;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.boton-verde-suave:hover {
+  background-color: rgba(46, 125, 50, 0.2);
+}

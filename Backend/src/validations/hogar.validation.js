@@ -9,16 +9,3 @@ export const hogarValidation = Joi.object({
     "any.required": "La dirección es obligatoria.",
   }),
 });
-
-export const hogarQueryValidation = Joi.object({
-  id: Joi.number().integer().positive().messages({
-    "number.base": "El ID debe ser un número.",
-    "number.integer": "El ID debe ser un número entero.",
-    "number.positive": "El ID debe ser un número positivo.",
-  }),
-  direccion: Joi.string().min(3).max(60).messages({
-    "string.base": "La dirección debe ser un texto.",
-    "string.min": "La dirección debe tener al menos 3 caracteres.",
-    "string.max": "La dirección no debe superar los 60 caracteres.",
-  }),
-});

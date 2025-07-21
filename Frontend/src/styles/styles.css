@@ -2,6 +2,7 @@
 @import url("animations.css");
 html,
 body {
+	background: linear-gradient(90deg, #25af372f, #152c1a17);
 	margin: 0;
 	display: flex;
 	flex-direction: column;

@@ -42,81 +42,95 @@ const Navbar = () => {
     });
   };
 
-  return (
-    <nav className="navbar">
-      <div className={`nav-menu ${menuOpen ? 'activado' : ''}`}>
-        <ul>
-          <li>
-            <NavLink 
-              to="/home" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Inicio
-            </NavLink>
-          </li>
-          <li>
-            <NavLink 
-              to="/reuniones" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Reuniones
-            </NavLink>
-          </li>
-          <li>
-            <NavLink 
-              to="/solicitudes" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Solicitudes
-            </NavLink>
-          </li>
-          {userRole === 'administrador' && (
-            <li>
-              <NavLink 
-                to="/users" 
-                onClick={() => { 
-                  setMenuOpen(false); 
-                  addActiveClass();
-                }} 
-                className={({ isActive }) => (isActive ? 'active' : '')}
-              >
-                Usuarios
-              </NavLink>
-            </li>
-          )}
-          <li>
-            <NavLink 
-              to="/auth" 
-              onClick={() => { 
-                logoutSubmit(); 
-                setMenuOpen(false); 
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Cerrar sesión
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-      <div className="hamburger" onClick={toggleMenu}>
-        <span className="bar"></span>
-        <span className="bar"></span>
-        <span className="bar"></span>
-      </div>
-    </nav>
-  );
+
+    return (
+        <nav className="navbar">
+            <div className={`nav-menu ${menuOpen ? 'activado' : ''}`}>
+                <ul>
+                    <li>
+                        <NavLink 
+                            to="/home" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Inicio
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink 
+                            to="/reuniones" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Reuniones
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink 
+                            to="/Hogares" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Hogares
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink 
+                            to="/solicitudes" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Solicitudes
+                        </NavLink>
+                    </li>
+                    {userRole === 'administrador' && (
+                    <li>
+                        <NavLink 
+                            to="/users" 
+                            onClick={() => { 
+                                setMenuOpen(false); 
+                                addActiveClass();
+                            }} 
+                            activeClassName="active"
+                        >
+                            Usuarios
+                        </NavLink>
+                    </li>
+                    )}
+                    <li>
+                        <NavLink 
+                            to="/auth" 
+                            onClick={() => { 
+                                logoutSubmit(); 
+                                setMenuOpen(false); 
+                            }} 
+                            activeClassName="active"
+                        >
+                            Cerrar sesión
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
+            <div className="hamburger" onClick={toggleMenu}>
+                <span className="bar"></span>
+                <span className="bar"></span>
+                <span className="bar"></span>
+            </div>
+        </nav>
+    );
+
 };
 
 export default Navbar;

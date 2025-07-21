@@ -1,4 +1,5 @@
 .main-container {
+  background: linear-gradient(90deg, #25af372f, #152c1a17);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -21,7 +22,7 @@
 }
 
 .title-table {
-  color: #003366;
+  color: #364632f1;
   margin-left: 70px;
 }
 
@@ -31,10 +32,10 @@
 }
 
 .filter-actions button {
-  background: rgba(255, 255, 255, 0.87);
+  background: rgb(255, 255, 255);
   border: none;
   cursor: pointer;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  box-shadow: rgba(47, 170, 53, 0.555) 0px 2px 8px 0px;
   padding: 6px 10px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
@@ -102,7 +103,7 @@
 }
 
 .create-button {
-  background-color: #003366 !important;
+  background-color: #12752b !important;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -115,5 +116,5 @@
 
 .create-button:hover {
   text-decoration: underline;
-  text-decoration-color: #00bfff;
+  text-decoration-color: #6e8573;
 }
