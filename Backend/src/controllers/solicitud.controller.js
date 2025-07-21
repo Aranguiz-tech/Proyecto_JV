@@ -2,6 +2,7 @@
 import {
   createSolicitudService,
   deleteSolicitudService,
+  getSolicitudesPorUsuarioService,
   getSolicitudesService,
   getSolicitudPorIdService,
   updateEstadoSolicitudService,
@@ -15,7 +16,14 @@ import {
 
 export async function createSolicitud(req, res) {
   try {
-    const [nuevaSolicitud, error] = await createSolicitudService(req.body);
+    const solicitudData = {
+      ...req.body,
+      usuario: { id: req.user.id },
+      archivoNombre: req.file ? req.file.filename : null,
+      archivoRuta: req.file ? req.file.path : null,
+    };
+
+    const [nuevaSolicitud, error] = await createSolicitudService(solicitudData);
 
     if (error) return handleErrorClient(res, 400, error);
 
@@ -23,7 +31,24 @@ export async function createSolicitud(req, res) {
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
+};
+
+
+export async function getSolicitudesPorUsuario(req, res) {
+  try {
+    const { usuarioId } = req.params;
+
+    const [solicitudes, error] = await getSolicitudesPorUsuarioService(Number(usuarioId));
+
+    if (error) return handleErrorClient(res, 404, error);
+
+    handleSuccess(res, 200, "Solicitudes encontradas para el usuario", solicitudes);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }
+
+
 
 export async function getSolicitudPorId(req, res) {
   try {
