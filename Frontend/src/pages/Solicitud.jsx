@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 
 import Table from '@components/Table';
 import Search from '@components/Search';
@@ -18,15 +18,19 @@ import {
   createSolicitud,
 } from '@services/solicitud.service.js';
 
+import { AuthContext } from '@context/AuthContext';
+
 const Solicitud = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [filterTipo, setFilterTipo] = useState('');
-  const [dataSolicitud, setDataSolicitud] = useState([]);
+  const [dataSolicitud, setDataSolicitud] = useState([]); // array de solicitudes seleccionadas
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMode, setPopupMode] = useState('edit');
+
+  const { user } = useContext(AuthContext);
 
   const fetchSolicitudes = async () => {
     setLoading(true);
@@ -71,9 +75,14 @@ const Solicitud = () => {
     setIsPopupOpen(true);
   };
 
-  const handleUpdate = async (id, data) => {
+  const handleUpdate = async (formData) => {
     try {
-      const result = await updateSolicitud(id, data);
+      const id = formData.get('id');
+      if (!id) {
+        setError('Falta el id de la solicitud para actualizar');
+        return;
+      }
+      const result = await updateSolicitud(id, formData);
       if (result?.message) {
         setError(result.message);
       } else {
@@ -87,9 +96,9 @@ const Solicitud = () => {
     }
   };
 
-  const handleCreate = async (data) => {
+  const handleCreate = async (formData) => {
     try {
-      const result = await createSolicitud(data);
+      const result = await createSolicitud(formData);
       if (result?.message) {
         setError(result.message);
       } else {
@@ -153,7 +162,11 @@ const Solicitud = () => {
             <button
               onClick={handleClickUpdate}
               disabled={dataSolicitud.length === 0}
-              title={dataSolicitud.length === 0 ? 'Selecciona una solicitud para editar' : 'Editar solicitud'}
+              title={
+                dataSolicitud.length === 0
+                  ? 'Selecciona una solicitud para editar'
+                  : 'Editar solicitud'
+              }
             >
               <img
                 src={dataSolicitud.length === 0 ? UpdateIconDisable : UpdateIcon}
@@ -164,7 +177,11 @@ const Solicitud = () => {
               className="delete-user-button"
               disabled={dataSolicitud.length === 0}
               onClick={() => handleDelete(dataSolicitud)}
-              title={dataSolicitud.length === 0 ? 'Selecciona una solicitud para eliminar' : 'Eliminar solicitud'}
+              title={
+                dataSolicitud.length === 0
+                  ? 'Selecciona una solicitud para eliminar'
+                  : 'Eliminar solicitud'
+              }
             >
               <img
                 src={dataSolicitud.length === 0 ? DeleteIconDisable : DeleteIcon}
@@ -177,7 +194,9 @@ const Solicitud = () => {
         {loading && <p>Cargando solicitudes...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {!loading && !error && solicitudes.length === 0 && <p>No hay solicitudes para mostrar.</p>}
+        {!loading && !error && solicitudes.length === 0 && (
+          <p>No hay solicitudes para mostrar.</p>
+        )}
 
         <Table
           data={solicitudes}
@@ -192,22 +211,23 @@ const Solicitud = () => {
       <PopupSolicitud
         show={isPopupOpen}
         setShow={setIsPopupOpen}
-        data={dataSolicitud}
+        data={
+          popupMode === 'edit' &&
+          dataSolicitud.length > 0 &&
+          dataSolicitud[0]?.id
+            ? dataSolicitud[0]
+            : {}
+        }
         action={async (formData) => {
           if (!formData) return;
           if (popupMode === 'edit') {
-            await handleUpdate(formData.id, {
-              tipo: formData.tipo,
-              motivo: formData.motivo,
-            });
+            await handleUpdate(formData);
           } else {
-            await handleCreate({
-              tipo: formData.tipo,
-              motivo: formData.motivo,
-            });
+            await handleCreate(formData);
           }
         }}
         mode={popupMode}
+        usuarioId={user?.id}
       />
     </div>
   );
