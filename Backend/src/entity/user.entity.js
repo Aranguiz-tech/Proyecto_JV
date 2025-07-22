@@ -77,7 +77,13 @@ const User = new EntitySchema({
       type: "one-to-many",
       inverseSide: "usuario",
     },
-  */ },
+  */ 
+ solicitudes: {
+      type: "one-to-many",
+      target: "Solicitud",
+      inverseSide: "usuario",
+    },
+  },
 });
 
 export default User;
