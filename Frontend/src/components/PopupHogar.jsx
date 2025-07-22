@@ -4,10 +4,13 @@ import CloseIcon from '@assets/XIcon.svg';
 
 export default function PopupHogar({ show, setShow, data, action }) {
   const hogarData = data || {};
+  
 
   const handleSubmit = (formData) => {
     action(hogarData.id, formData.nuevaDireccion);
+
   };
+
 
   return (
     <div>

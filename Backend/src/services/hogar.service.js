@@ -63,7 +63,7 @@ export async function updateHogarService(id, nuevaDireccion) {
     hogar.direccion = nuevaDireccion;
     await hogarRepo.save(hogar);
 
-    return [hogar, null];
+    return [hogar];
   } catch (error) {
     console.error("Error al actualizar hogar:", error);
     return [null, "Error interno del servidor"];
@@ -78,7 +78,7 @@ export async function deleteHogarService(id) {
     if (!hogar) return [null, "Hogar no encontrado"];
 
     await hogarRepo.remove(hogar);
-    return [hogar, null];
+    return [hogar];
   } catch (error) {
     console.error("Error al eliminar hogar:", error);
     return [null, "Error interno del servidor"];

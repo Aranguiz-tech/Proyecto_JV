@@ -32,6 +32,7 @@ const Register = () => {
 	}, [hogares]);
 
 	const registerSubmit = async (data) => {
+		console.log("que se envia: ", data);
 		try {
 			const response = await register(data);
 			if (response.status === 'Success') {
