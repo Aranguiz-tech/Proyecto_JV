@@ -22,13 +22,11 @@ const Register = () => {
 	const { hogares } = useGetHogares();
 
 	useEffect(() => {
-		if (Array.isArray(hogares)) {
 			const opciones = hogares.map((hogar) => ({
 				value: hogar.id,
 				label: hogar.direccion
 			}));
 			setHogaresOptions(opciones);
-		}
 	}, [hogares]);
 
 	const registerSubmit = async (data) => {
@@ -123,7 +121,7 @@ const Register = () => {
 						name: "rol",
 						fieldType: 'select',
 						options: [
-							{ value: "vecino", label: "Vecino" },
+							{ value: "vecino", label: "vecino" },
 							{ value: "jefe de hogar", label: "Jefe de hogar" },
 						],
 						required: true,

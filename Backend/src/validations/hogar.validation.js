@@ -1,11 +1,15 @@
 import Joi from "joi";
 
 export const hogarValidation = Joi.object({
-  direccion: Joi.string().min(5).max(60).required().messages({
-    "string.base": "La dirección debe ser un texto.",
-    "string.empty": "La dirección no puede estar vacía.",
-    "string.min": "La dirección debe tener al menos 5 caracteres.",
-    "string.max": "La dirección no debe superar los 60 caracteres.",
-    "any.required": "La dirección es obligatoria.",
-  }),
+  tipo: Joi.string().valid("Psj.", "Av.").required()
+    .messages({ "any.only": "El tipo debe ser 'Psj.' o 'Av.'" }),
+  Direccion: Joi.string().min(3).max(50).required()
+    .messages({
+      "string.empty": "El nombre de la calle es obligatorio"
+    }),
+  numero: Joi.number().integer().positive().required()
+    .messages({
+      "number.base": "El número debe ser un número válido",
+      "number.positive": "El número debe ser mayor que 0"
+    }),
 });

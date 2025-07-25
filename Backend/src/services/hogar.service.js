@@ -3,7 +3,7 @@ import { AppDataSource } from "../config/configDb.js";
 export async function createHogarService(direccion) {
   try {
     if (!direccion) {
-      return [null, "La dirección es obligatoria"];
+      return ["La dirección es obligatoria"];
     }
 
     const hogarRepo = AppDataSource.getRepository("Hogar");

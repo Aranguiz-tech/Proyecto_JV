@@ -6,8 +6,8 @@ import '@styles/form.css';
 const CrearReunion = () => {
   const handleSubmit = async (data) => {
     try {
-      console.log("Datos enviados:", data); 
       const response = await createReunion(data);
+      console.log("que viene del front", data);
 
       if (response.status === 'Success') {
         showSuccessAlert('¡Reunión creada!', 'La reunión fue agendada correctamente.');
