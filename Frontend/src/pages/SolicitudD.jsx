@@ -4,6 +4,7 @@ import Table from '@components/Table';
 import Search from '@components/Search';
 import PopupSolicitud from '@components/PopupSolicitud';
 import PopupArchivo from '@components/PopupArchivo';
+import PopupEstado from '@components/PopupEstado';
 
 import UpdateIcon from '@assets/updateIcon.svg';
 import UpdateIconDisable from '@assets/updateIconDisabled.svg';
@@ -17,6 +18,7 @@ import {
   updateSolicitud,
   deleteSolicitud,
   createSolicitud,
+  updateEstadoSolicitud,
 } from '@services/solicitud.service.js';
 
 import { AuthContext } from '@context/AuthContext';
@@ -52,6 +54,8 @@ const Solicitud = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMode, setPopupMode] = useState('edit');
   const [popupArchivoUrl, setPopupArchivoUrl] = useState(null);
+  const [popupEstadoOpen, setPopupEstadoOpen] = useState(false);
+
   const { user } = useContext(AuthContext);
 
   const fetchSolicitudes = async () => {
@@ -109,6 +113,12 @@ const Solicitud = () => {
     setDataSolicitud([]);
     setPopupMode('create');
     setIsPopupOpen(true);
+  };
+
+  const handleClickEstado = () => {
+    if (dataSolicitud.length > 0) {
+      setPopupEstadoOpen(true);
+    }
   };
 
   const handleUpdate = async (formData) => {
@@ -189,11 +199,7 @@ const Solicitud = () => {
               onChange={handleTipoFilterChange}
               placeholder="Filtrar por tipo"
             />
-            <button
-              className="create-button"
-              onClick={handleClickCreate}
-              title="Solicitar documento"
-            >
+            <button className="create-button" onClick={handleClickCreate}>
               Solicitar documento
             </button>
 
@@ -202,13 +208,6 @@ const Solicitud = () => {
               disabled={
                 dataSolicitud.length === 0 ||
                 !puedeEditarSolicitud(dataSolicitud[0]?._rawFechaCreacion)
-              }
-              title={
-                dataSolicitud.length === 0
-                  ? 'Selecciona una solicitud para editar'
-                  : !puedeEditarSolicitud(dataSolicitud[0]?._rawFechaCreacion)
-                  ? 'Tiempo expirado para editar (2 minutos)'
-                  : 'Editar solicitud'
               }
             >
               <img
@@ -226,11 +225,6 @@ const Solicitud = () => {
               className="delete-user-button"
               disabled={dataSolicitud.length === 0}
               onClick={() => handleDelete(dataSolicitud)}
-              title={
-                dataSolicitud.length === 0
-                  ? 'Selecciona una solicitud para eliminar'
-                  : 'Eliminar solicitud'
-              }
             >
               <img
                 src={dataSolicitud.length === 0 ? DeleteIconDisable : DeleteIcon}
@@ -242,20 +236,24 @@ const Solicitud = () => {
               <button
                 className="create-button"
                 onClick={() => abrirPopupArchivo(dataSolicitud[0].archivoUrl)}
-                title="Ver archivo"
               >
                 Ver imagen
               </button>
             )}
+
+            <button
+              className="create-button"
+              disabled={dataSolicitud.length === 0}
+              onClick={handleClickEstado}
+            >
+              Editar estado
+            </button>
           </div>
         </div>
 
         {loading && <p>Cargando solicitudes...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {!loading && !error && solicitudes.length === 0 && (
-          <p>No hay solicitudes para mostrar.</p>
-        )}
+        {!loading && !error && solicitudes.length === 0 && <p>No hay solicitudes para mostrar.</p>}
 
         <Table
           data={solicitudes}
@@ -290,6 +288,14 @@ const Solicitud = () => {
       />
 
       <PopupArchivo url={popupArchivoUrl} onClose={cerrarPopupArchivo} />
+
+      <PopupEstado
+        show={popupEstadoOpen}
+        setShow={setPopupEstadoOpen}
+        solicitud={dataSolicitud[0]}
+        action={updateEstadoSolicitud}
+        onUpdated={fetchSolicitudes}
+      />
     </div>
   );
 };

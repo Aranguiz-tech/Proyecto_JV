@@ -8,6 +8,7 @@ import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
+import SolicitudD from './pages/SolicitudD';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'solicitudes',
         element: <Solicitud />
+      },
+      {
+        path: 'solicitudesD',
+        element: <SolicitudD />
       }
     ]
   },

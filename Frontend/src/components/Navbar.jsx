@@ -70,18 +70,6 @@ const Navbar = () => {
               Reuniones
             </NavLink>
           </li>
-          <li>
-            <NavLink 
-              to="/solicitudes" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Solicitudes
-            </NavLink>
-          </li>
           {userRole === 'administrador' && (
             <li>
               <NavLink 
@@ -94,7 +82,33 @@ const Navbar = () => {
               >
                 Usuarios
               </NavLink>
+            </li>,
+            <li>
+              <NavLink
+              to={"/solicitudesD"}
+              onClick={() => {
+                setMenuOpen(false);
+                addActiveClass();
+              }}
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
+              Solicitudes
+            </NavLink>
             </li>
+          )}
+          {userRole === 'jefe de hogar' && (
+            <li>
+            <NavLink 
+              to="/solicitudes" 
+              onClick={() => { 
+                setMenuOpen(false); 
+                addActiveClass();
+              }} 
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
+              Solicitudes
+            </NavLink>
+          </li>
           )}
           <li>
             <NavLink 
