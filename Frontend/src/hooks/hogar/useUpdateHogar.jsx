@@ -3,6 +3,7 @@ import { showErrorAlert, showSuccessAlert } from '@helpers/sweetAlert.js';
 
 const useUpdateHogar = (fetchHogares, setIsPopupOpen, setDataHogar) => {
   const handleUpdate = async (id, direccion) => {
+    console.log("direccion", direccion);
     try {
       const response = await updateHogar(id, direccion);
 

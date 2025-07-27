@@ -8,7 +8,7 @@ import DeleteIcon from '@assets/deleteIcon.svg';
 import DeleteIconDisable from '@assets/deleteIconDisabled.svg';
 import CancelIcon from '@assets/updateIcon.svg';
 import CancelIconDisable from '@assets/updateIconDisabled.svg';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import '@styles/users.css';
 
 const Reuniones = () => {
@@ -20,9 +20,10 @@ const Reuniones = () => {
   const { handleDelete } = useDeleteReunion(fetchReuniones, setDataReunion);
   const { handleUpdate } = useUpdateReunion(fetchReuniones, setIsPopupOpen, setDataReunion);
 
-  const handleSelectionChange = useCallback((selectedReuniones) => {
-    setDataReunion(selectedReuniones);
-  }, []);
+  const handleSelectionChange = (selectedReuniones) => {
+  setDataReunion(selectedReuniones);
+  };
+
 
   const handleFechaFilterChange = (e) => {
     setFilterFecha(e.target.value);

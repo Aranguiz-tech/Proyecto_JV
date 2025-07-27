@@ -23,7 +23,7 @@ export async function getReuniones() {
 export async function deleteReunion(id) {
   try {
     const { data } = await axios.delete(`/reunion/${id}`);
-    return data.data;
+    return data;
   } catch (error) {
     console.error("Error al eliminar reunión:", error);
     return error.response?.data || null;

@@ -25,13 +25,31 @@ const CrearHogar = () => {
         title="Crear hogar"
         fields={[
           {
+            label: "Tipo",
+            name: "tipo",
+            fieldType: 'select',
+            options: [
+              { value: "Psj.", label: "Psj." },
+              { value: "Av.", label: "Av." }
+            ],
+            required: true,
+            maxLength: 255,
+          },
+          {
             label: "Dirección",
-            name: "direccion",
-            placeholder: "Ej: psje Acotango #0343",
+            name: "Direccion",
             fieldType: 'input',
             type: "text",
             required: true,
-            maxLength: 255,
+            maxLength: 50,
+          },
+          {
+            label: "Número #",
+            name: "numero",
+            fieldType: 'input',
+            type: "number",
+            required: true,
+            min: 1,
           }
         ]}
         buttonText="Crear hogar"

@@ -8,7 +8,7 @@ import DeleteIcon from '@assets/deleteIcon.svg';
 import DeleteIconDisable from '@assets/deleteIconDisabled.svg';
 import CancelIcon from '@assets/updateIcon.svg';
 import CancelIconDisable from '@assets/updateIconDisabled.svg';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import '@styles/users.css';
 
 const Hogares = () => {
@@ -20,17 +20,19 @@ const Hogares = () => {
   const { handleDelete } = useDeleteHogar(fetchHogares, setDataHogar);
   const { handleUpdate } = useUpdateHogar(fetchHogares, setIsPopupOpen, setDataHogar);
 
-  const handleSelectionChange = useCallback((selected) => {
-    setDataHogar(selected[0] || null);
-  }, []);
+const handleSelectionChange = (selected) => {
+  setDataHogar(selected[0]); 
+};
+
 
   const handleFilterChange = (e) => {
     setFilterDireccion(e.target.value);
   };
 
-  const handleClickActualizar = () => {
-    if (dataHogar) setIsPopupOpen(true);
-  };
+const handleClickActualizar = () => {
+  if (dataHogar) setIsPopupOpen(true);
+};
+
 
   const columns = [
     { title: "Dirección", field: "direccion", width: 1100 },
@@ -52,7 +54,7 @@ const Hogares = () => {
           </div>
         </div>
         <Table
-          data={Array.isArray(hogares) ? hogares : []}
+          data={hogares}
           columns={columns}
           filter={filterDireccion}
           dataToFilter={'direccion'}

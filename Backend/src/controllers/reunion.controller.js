@@ -10,15 +10,20 @@ import {
   handleErrorServer,
   handleSuccess
 } from "../handlers/responseHandlers.js";
+import { reunionValidation } from "../validations/reunion.validation.js";
 
 export async function createReunion(req, res) {
   try {
     const { body } = req;
-    const [nuevaReunion, error] = await createReunionService(body);
 
-    if (error)
-      return handleErrorClient(res, 400, "Error al crear reunión", error);
-
+    const { error } = reunionValidation.validate(body);
+    if (error) {
+      return handleErrorClient(res, 400, "Error de validación", error.message);
+    }
+    const [nuevaReunion, errorCreacion] = await createReunionService(body);
+    if (errorCreacion) {
+      return handleErrorClient(res, 400, "Error al crear reunión", errorCreacion);
+    }
     handleSuccess(res, 201, "Reunión creada correctamente", nuevaReunion);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
