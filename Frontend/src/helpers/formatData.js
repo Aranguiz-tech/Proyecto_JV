@@ -12,7 +12,6 @@ export function formatUserData(user) {
         createdAt: formatTempo(user.createdAt, "DD-MM-YYYY")
     };
 }
-
 export function convertirMinusculas(obj) {
     for (let key in obj) {
         if (typeof obj[key] === 'string') {
@@ -65,3 +64,4 @@ export function formatPostUpdateSolicitud(solicitud) {
             : '',
     };
 }
+

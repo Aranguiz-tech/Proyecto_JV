@@ -6,21 +6,23 @@ const useUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await getUsers();
-            const formattedData = response.map(user => ({
-                nombre: user.nombre,
-                apellido: user.apellido,
-                rut: user.rut,
-                email: user.email,
-                rol: user.rol,
-                createdAt: user.createdAt
-            }));
-            dataLogged(formattedData);
-            setUsers(formattedData);
-        } catch (error) {
-            console.error("Error: ", error);
-        }
-    };
+           const response = await getUsers();
+           const formattedData = response.map(user => ({
+            nombre: user.nombre,
+            apellido: user.apellido,
+            rut: user.rut,
+            email: user.email,
+            rol: user.rol,
+            createdAt: user.fechaCreacion,
+            direccion: user.hogar.direccion,
+        }));
+        dataLogged(formattedData);
+        setUsers(formattedData);
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+};
+
 
     useEffect(() => {
         fetchUsers();

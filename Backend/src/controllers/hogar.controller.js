@@ -19,12 +19,13 @@ import {
 
 export async function createHogar(req, res) {
   try {
-    const { direccion } = req.body;
+    const { tipo, Direccion, numero} = req.body;
 
-    const { error } = hogarValidation.validate({ direccion });
+    const { error } = hogarValidation.validate({ tipo, Direccion, numero });
     if (error)
       return handleErrorClient(res, 400, "Error de validación", error.message);
 
+    const direccion = `${tipo} ${Direccion} #${numero}`;
     const [hogar, hogarError] = await createHogarService(direccion);
 
     if (hogarError)

@@ -55,7 +55,7 @@ export async function register(req, res) {
 
 export async function logout(req, res) {
   try {
-    res.clearCookie("jwt", { httpOnly: true });
+    res.clearCookie("jwt-auth", { httpOnly: true });
     handleSuccess(res, 200, "Sesión cerrada exitosamente");
   } catch (error) {
     handleErrorServer(res, 500, error.message);

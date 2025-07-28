@@ -8,7 +8,13 @@ import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
-import SolicitudD from './pages/SolicitudD';
+import SolicitudD from '@pages/SolicitudD';
+import Reuniones from '@pages/Reuniones/Reuniones';
+import CrearReunion from '@pages/Reuniones/CrearReunion';
+import VerReuniones from '@pages/Reuniones/VerReuniones';
+import Hogares from '@pages/Hogares/Hogares';
+import CrearHogares from '@pages/Hogares/CrearHogares';
+import VerHogares from '@pages/Hogares/VerHogares';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -30,12 +36,37 @@ const router = createBrowserRouter([
         )
       },
       {
+      path: 'reuniones',
+      element: <Reuniones />
+    },
+    {
+      path: 'reuniones/crear',
+      element: <CrearReunion />
+    },
+        {
+      path: 'reuniones/ver',
+      element: <VerReuniones />
+    },
+
+      {
         path: 'solicitudes',
         element: <Solicitud />
       },
       {
         path: 'solicitudesD',
         element: <SolicitudD />
+      },
+       {
+        path: 'hogares',
+        element: <Hogares />
+      },
+      {
+        path: 'hogares/crear',
+        element: <CrearHogares />
+      },
+       {
+        path: 'hogares/ver',
+        element: <VerHogares />
       }
     ]
   },

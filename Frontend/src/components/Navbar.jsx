@@ -42,6 +42,7 @@ const Navbar = () => {
     });
   };
 
+
   return (
     <nav className="navbar">
       <div className={`nav-menu ${menuOpen ? 'activado' : ''}`}>
@@ -131,6 +132,7 @@ const Navbar = () => {
       </div>
     </nav>
   );
+
 };
 
 export default Navbar;
