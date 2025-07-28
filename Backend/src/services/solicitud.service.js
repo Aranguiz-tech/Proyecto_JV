@@ -1,5 +1,9 @@
 "use strict";
 import { AppDataSource } from "../config/configDb.js";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
+import PDFDocument from "pdfkit";
 
 export async function createSolicitudService(data) {
   try {
@@ -18,40 +22,23 @@ export async function createSolicitudService(data) {
 
     return [nuevaSolicitud, null];
   } catch (error) {
-    console.error("Error al crear solicitud:", error);
     return [null, "Error del servidor"];
   }
 }
-
-export async function getSolicitudesPorUsuarioService(usuarioId) {
-  try {
-    const solicitudRepo = dataSource.getRepository("Solicitud");
-
-    const solicitudes = await solicitudRepo.find({
-      where: {
-        usuario: { id: usuarioId },
-      },
-      relations: ["usuario"],
-    });
-
-    return [solicitudes, null];
-  } catch (error) {
-    return [null, error.message];
-  }
-}
-
 
 export async function getSolicitudPorIdService(id) {
   try {
     const SolRepo = AppDataSource.getRepository("Solicitud");
 
-    const solicitud = await SolRepo.findOne({ where: { id: Number(id) } });
+    const solicitud = await SolRepo.findOne({
+      where: { id },
+      relations: ["usuario"],
+    });
 
     if (!solicitud) return [null, "Solicitud no encontrada"];
 
     return [solicitud, null];
   } catch (error) {
-    console.error("Error al obtener solicitud:", error);
     return [null, "Error del servidor"];
   }
 }
@@ -59,7 +46,8 @@ export async function getSolicitudPorIdService(id) {
 export async function getSolicitudesService() {
   try {
     const SolRepo = AppDataSource.getRepository("Solicitud");
-    const solicitudes = await SolRepo.find();
+
+    const solicitudes = await SolRepo.find({ relations: ["usuario"] });
 
     if (!solicitudes || solicitudes.length === 0) {
       return [null, "No se encontraron solicitudes"];
@@ -67,7 +55,6 @@ export async function getSolicitudesService() {
 
     return [solicitudes, null];
   } catch (error) {
-    console.error("Error al obtener solicitudes:", error);
     return [null, "Error del servidor"];
   }
 }
@@ -84,7 +71,6 @@ export async function deleteSolicitudService(id) {
 
     return [solicitud, null];
   } catch (error) {
-    console.error("Error al eliminar solicitud:", error);
     return [null, "Error del servidor"];
   }
 }
@@ -94,7 +80,7 @@ export async function updateSolicitudService(id, data) {
     const { tipo, motivo, archivoNombre, archivoRuta } = data;
     const SolRepo = AppDataSource.getRepository("Solicitud");
 
-    const solicitud = await SolRepo.findOne({ where: { id } });
+    const solicitud = await SolRepo.findOne({ where: { id }, relations: ["usuario"] });
 
     if (!solicitud) return [null, "Solicitud no encontrada"];
 
@@ -107,32 +93,101 @@ export async function updateSolicitudService(id, data) {
 
     return [actualizada, null];
   } catch (error) {
-    console.error("Error al actualizar solicitud:", error);
     return [null, "Error del servidor"];
   }
 }
 
 export async function updateEstadoSolicitudService(id, data) {
   try {
-    const { estado, justificacionDeReachazo } = data;
+    const { estado, justificacionDeRechazo } = data;
     const SolRepo = AppDataSource.getRepository("Solicitud");
 
-    const solicitud = await SolRepo.findOne({ where: { id } });
+    const solicitud = await SolRepo.findOne({
+      where: { id },
+      relations: ["usuario", "usuario.hogar"],
+    });
 
     if (!solicitud) return [null, "Solicitud no encontrada"];
 
     solicitud.estado = estado;
+    
 
     if (estado !== "aprobado") {
-      solicitud.justificacionDeReachazo =
-        justificacionDeReachazo || "No se ha proporcionado una justificación de rechazo";
+      if (!justificacionDeRechazo || justificacionDeRechazo === null) {
+        solicitud.justificacionDeRechazo = "No se ha proporcionado una justificación de rechazo";
+      }
+      solicitud.justificacionDeRechazo = justificacionDeRechazo;
+    } else if (solicitud.tipo === "Certificado de Residencia") {
+      const carpetaDocumentos = path.join(process.cwd(), "documentos");
+      if (!fs.existsSync(carpetaDocumentos)) {
+        fs.mkdirSync(carpetaDocumentos, { recursive: true });
+      }
+
+      const fileName = `certificado_${solicitud.id}_${crypto.randomUUID().slice(0, 8)}.pdf`;
+      const filePath = path.join("documentos", fileName);
+      const absolutePath = path.join(process.cwd(), filePath);
+
+      const doc = new PDFDocument({
+        margins: { top: 50, bottom: 50, left: 72, right: 72 },
+      });
+
+      doc.pipe(fs.createWriteStream(absolutePath));
+
+      doc
+        .fontSize(10)
+        .text(new Date().toLocaleDateString("es-CL"), { align: "right" });
+
+      const { nombre, apellido, rut, hogar } = solicitud.usuario;
+      const direccion = hogar?.direccion || "DIRECCIÓN NO DISPONIBLE";
+
+      doc
+        .moveDown(2)
+        .fontSize(14)
+        .text("La junta de vecinos “Parque Ecuador”", { align: "left" })
+        .moveDown()
+        .fontSize(12)
+        .text("Certifica que:")
+        .moveDown()
+        .text(`Señor(a): ${nombre} ${apellido}, Rut: ${rut}`)
+        .moveDown()
+        .text(`Mantiene domicilio vigente en la dirección: ${direccion}, comuna de Concepción.`)
+        .moveDown()
+        .text(
+          `Se extiende el presente certificado a solicitud del interesado(a) para ser presentado ${solicitud.motivo}, con el fin de acreditar su domicilio.`
+        )
+        .moveDown()
+        .text("La validez del certificado es de tres meses a contar de la fecha de su emisión.")
+        .moveDown(4)
+        .text("Atentamente,", { align: "left" });
+
+      const selloPath = path.join(process.cwd(), "assets", "sello.png");
+      const firmaX = 72;
+      const firmaY = doc.y + 30;
+
+      if (fs.existsSync(selloPath)) {
+        doc.image(selloPath, firmaX, firmaY - 40, { width: 100 });
+      }
+
+      doc
+        .moveDown(4)
+        .text("_______________________________", firmaX, firmaY, { align: "left" })
+        .text("Presidente(a) de la Junta de Vecinos", firmaX, firmaY + 15, { align: "left" });
+
+      doc.end();
+
+      solicitud.documentoNombre = fileName;
+      solicitud.documentoRuta = filePath;
     }
+    solicitud.justificacionDeRechazo = justificacionDeRechazo;
 
     const actualizada = await SolRepo.save(solicitud);
-
     return [actualizada, null];
-  } catch (error) {
-    console.error("Error al actualizar estado:", error);
+  } catch {
     return [null, "Error del servidor"];
   }
 }
+
+
+
+
+

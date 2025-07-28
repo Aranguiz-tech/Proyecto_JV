@@ -2,7 +2,6 @@
 import {
   createSolicitudService,
   deleteSolicitudService,
-  getSolicitudesPorUsuarioService,
   getSolicitudesService,
   getSolicitudPorIdService,
   updateEstadoSolicitudService,
@@ -32,23 +31,6 @@ export async function createSolicitud(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 };
-
-
-export async function getSolicitudesPorUsuario(req, res) {
-  try {
-    const { usuarioId } = req.params;
-
-    const [solicitudes, error] = await getSolicitudesPorUsuarioService(Number(usuarioId));
-
-    if (error) return handleErrorClient(res, 404, error);
-
-    handleSuccess(res, 200, "Solicitudes encontradas para el usuario", solicitudes);
-  } catch (error) {
-    handleErrorServer(res, 500, error.message);
-  }
-}
-
-
 
 export async function getSolicitudPorId(req, res) {
   try {
@@ -91,7 +73,14 @@ export async function deleteSolicitud(req, res) {
 export async function updateSolicitud(req, res) {
   try {
     const { id } = req.params;
-    const [solicitud, error] = await updateSolicitudService(Number(id), req.body);
+
+    const updatedData = {
+      ...req.body,
+      archivoNombre: req.file ? req.file.filename : null,
+      archivoRuta: req.file ? req.file.path : null,
+    };
+
+    const [solicitud, error] = await updateSolicitudService(Number(id), updatedData);
 
     if (error) return handleErrorClient(res, 404, error);
 
