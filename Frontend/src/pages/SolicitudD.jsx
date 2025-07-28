@@ -5,6 +5,7 @@ import Search from '@components/Search';
 import PopupSolicitud from '@components/PopupSolicitud';
 import PopupArchivo from '@components/PopupArchivo';
 import PopupEstado from '@components/PopupEstado';
+import PopupDocumento from '@components/PopupDocumento';
 
 import UpdateIcon from '@assets/updateIcon.svg';
 import UpdateIconDisable from '@assets/updateIconDisabled.svg';
@@ -55,6 +56,7 @@ const Solicitud = () => {
   const [popupMode, setPopupMode] = useState('edit');
   const [popupArchivoUrl, setPopupArchivoUrl] = useState(null);
   const [popupEstadoOpen, setPopupEstadoOpen] = useState(false);
+  const [popupDocumentoUrl, setPopupDocumentoUrl] = useState(null);
 
   const { user } = useContext(AuthContext);
 
@@ -74,6 +76,9 @@ const Solicitud = () => {
           _rawFechaCreacion: solicitud.fechaCreacion,
           archivoUrl: solicitud.archivoRuta
             ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.archivoRuta}`
+            : null,
+          documentoUrl: solicitud.documentoRuta
+            ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.documentoRuta}`
             : null,
         }));
         setSolicitudes(solicitudesFormateadas);
@@ -178,15 +183,27 @@ const Solicitud = () => {
   const abrirPopupArchivo = (url) => setPopupArchivoUrl(url);
   const cerrarPopupArchivo = () => setPopupArchivoUrl(null);
 
+  const abrirPopupDocumento = (url) => setPopupDocumentoUrl(url);
+  const cerrarPopupDocumento = () => setPopupDocumentoUrl(null);
+
   const columns = [
-    { title: 'ID', field: 'id', width: 50 },
-    { title: 'Tipo', field: 'tipo', width: 250 },
-    { title: 'Motivo', field: 'motivo', width: 250 },
-    { title: 'Estado', field: 'estado', width: 150 },
-    { title: 'Justificación', field: 'justificacionDeRechazo', width: 300 },
-    { title: 'Fecha de creación', field: 'fechaCreacion', width: 200 },
-    { title: 'Última actualización', field: 'fechaActualizacion', width: 200 },
-  ];
+  { title: 'ID', field: 'id', width: 50 },
+  { title: 'Tipo', field: 'tipo', width: 250 },
+  { title: 'Motivo', field: 'motivo', width: 250 },
+  { title: 'Estado', field: 'estado', width: 150 },
+  {
+  title: 'Justificación',
+  field: 'justificacionDeRechazo',
+  width: 300,
+  render: (row) => (
+    <div className="justificacion-text" title={row.justificacionDeRechazo || ''}>
+      {row.justificacionDeRechazo || ''}
+    </div>
+  ),
+},
+  { title: 'Fecha de creación', field: 'fechaCreacion', width: 200 },
+  { title: 'Última actualización', field: 'fechaActualizacion', width: 200 },
+];
 
   return (
     <div className="main-container">
@@ -241,6 +258,17 @@ const Solicitud = () => {
               </button>
             )}
 
+            {dataSolicitud.length > 0 &&
+              dataSolicitud[0].estado === 'aprobado' &&
+              dataSolicitud[0].documentoUrl && (
+                <button
+                  className="create-button"
+                  onClick={() => abrirPopupDocumento(dataSolicitud[0].documentoUrl)}
+                >
+                  Ver documento
+                </button>
+              )}
+
             <button
               className="create-button"
               disabled={dataSolicitud.length === 0}
@@ -288,6 +316,7 @@ const Solicitud = () => {
       />
 
       <PopupArchivo url={popupArchivoUrl} onClose={cerrarPopupArchivo} />
+      <PopupDocumento url={popupDocumentoUrl} onClose={cerrarPopupDocumento} />
 
       <PopupEstado
         show={popupEstadoOpen}

@@ -25,7 +25,10 @@ export default function PopupEstado({ show, setShow, solicitud, action, onUpdate
 
     const payload = {
       estado,
-      justificacionDeRechazo: estado === 'rechazado' ? justificacion : null,
+      justificacionDeRechazo:
+        estado === 'rechazado'
+          ? (justificacion.trim() || "No se ha proporcionado una justificación de rechazo")
+          : null,
     };
 
     action(solicitud.id, payload)
@@ -70,7 +73,6 @@ export default function PopupEstado({ show, setShow, solicitud, action, onUpdate
                 value={justificacion}
                 onChange={(e) => setJustificacion(e.target.value)}
                 rows={4}
-                required
                 className="input"
               />
             </div>

@@ -4,6 +4,7 @@ import Table from '@components/Table';
 import Search from '@components/Search';
 import PopupSolicitud from '@components/PopupSolicitud';
 import PopupArchivo from '@components/PopupArchivo';
+import PopupDocumento from '@components/PopupDocumento';
 
 import UpdateIcon from '@assets/updateIcon.svg';
 import UpdateIconDisable from '@assets/updateIconDisabled.svg';
@@ -52,6 +53,8 @@ const Solicitud = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMode, setPopupMode] = useState('edit');
   const [popupArchivoUrl, setPopupArchivoUrl] = useState(null);
+  const [popupDocumentoUrl, setPopupDocumentoUrl] = useState(null);
+
   const { user } = useContext(AuthContext);
 
   const fetchSolicitudes = async () => {
@@ -70,6 +73,9 @@ const Solicitud = () => {
           _rawFechaCreacion: solicitud.fechaCreacion,
           archivoUrl: solicitud.archivoRuta
             ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.archivoRuta}`
+            : null,
+          documentoUrl: solicitud.documentoRuta
+            ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.documentoRuta}`
             : null,
         }));
         setSolicitudes(solicitudesFormateadas);
@@ -167,6 +173,8 @@ const Solicitud = () => {
 
   const abrirPopupArchivo = (url) => setPopupArchivoUrl(url);
   const cerrarPopupArchivo = () => setPopupArchivoUrl(null);
+  const abrirPopupDocumento = (url) => setPopupDocumentoUrl(url);
+  const cerrarPopupDocumento = () => setPopupDocumentoUrl(null);
 
   const columns = [
     { title: 'ID', field: 'id', width: 50 },
@@ -196,7 +204,6 @@ const Solicitud = () => {
             >
               Solicitar documento
             </button>
-
             <button
               onClick={handleClickUpdate}
               disabled={
@@ -221,7 +228,6 @@ const Solicitud = () => {
                 alt="editar"
               />
             </button>
-
             <button
               className="delete-user-button"
               disabled={dataSolicitud.length === 0}
@@ -237,7 +243,6 @@ const Solicitud = () => {
                 alt="eliminar"
               />
             </button>
-
             {dataSolicitud.length > 0 && dataSolicitud[0].archivoUrl && (
               <button
                 className="create-button"
@@ -247,16 +252,24 @@ const Solicitud = () => {
                 Ver imagen
               </button>
             )}
+            {dataSolicitud.length > 0 &&
+              dataSolicitud[0].estado === 'aprobado' &&
+              dataSolicitud[0].documentoUrl && (
+                <button
+                  className="create-button"
+                  onClick={() => abrirPopupDocumento(dataSolicitud[0].documentoUrl)}
+                  title="Ver documento PDF"
+                >
+                  Ver documento
+                </button>
+              )}
           </div>
         </div>
-
         {loading && <p>Cargando solicitudes...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-
         {!loading && !error && solicitudes.length === 0 && (
           <p>No hay solicitudes para mostrar.</p>
         )}
-
         <Table
           data={solicitudes}
           columns={columns}
@@ -266,7 +279,6 @@ const Solicitud = () => {
           onSelectionChange={handleSelectionChange}
         />
       </div>
-
       <PopupSolicitud
         show={isPopupOpen}
         setShow={setIsPopupOpen}
@@ -288,8 +300,8 @@ const Solicitud = () => {
         mode={popupMode}
         usuarioId={user?.id}
       />
-
       <PopupArchivo url={popupArchivoUrl} onClose={cerrarPopupArchivo} />
+      <PopupDocumento url={popupDocumentoUrl} onClose={cerrarPopupDocumento} />
     </div>
   );
 };

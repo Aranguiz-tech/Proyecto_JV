@@ -58,6 +58,7 @@ async function setupServer() {
     app.use(passport.session());
 
     app.use("/uploads", express.static("uploads"));
+    app.use("/documentos", express.static("documentos"));
 
     passportJwtSetup();
 
