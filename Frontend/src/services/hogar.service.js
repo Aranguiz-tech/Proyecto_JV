@@ -23,17 +23,17 @@ export async function getHogares() {
 export async function deleteHogar(id) {
   try {
     const { data } = await axios.delete(`/hogar/${id}`);
-    return data.data;
+    return data;
   } catch (error) {
     console.error("Error al eliminar hogar:", error);
     return error.response?.data || null;
   }
 }
 
-export async function updateHogar(id, direccion) {
+export async function updateHogar(id, nuevaDireccion) {
   try {
-    const { data } = await axios.patch(`/hogar/${id}`, { nuevaDireccion: direccion });
-    return data.data;
+    const { data } = await axios.patch(`/hogar/${id}`, { nuevaDireccion });
+    return data;
   } catch (error) {
     console.error("Error al actualizar hogar:", error);
     return error.response?.data || null;

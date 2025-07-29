@@ -8,6 +8,7 @@ export async function createReunionService(datos) {
       return [null, "Faltan campos obligatorios"];
     }
 
+
     const reunionRepo = AppDataSource.getRepository("Reunion");
 
     const existeReunion = await reunionRepo.findOne({ where: { fechaInicio } });
