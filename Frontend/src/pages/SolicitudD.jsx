@@ -4,6 +4,7 @@ import Table from '@components/Table';
 import Search from '@components/Search';
 import PopupSolicitud from '@components/PopupSolicitud';
 import PopupArchivo from '@components/PopupArchivo';
+import PopupEstado from '@components/PopupEstado';
 import PopupDocumento from '@components/PopupDocumento';
 
 import UpdateIcon from '@assets/updateIcon.svg';
@@ -18,6 +19,7 @@ import {
   updateSolicitud,
   deleteSolicitud,
   createSolicitud,
+  updateEstadoSolicitud,
 } from '@services/solicitud.service.js';
 
 import { AuthContext } from '@context/AuthContext';
@@ -53,6 +55,7 @@ const Solicitud = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMode, setPopupMode] = useState('edit');
   const [popupArchivoUrl, setPopupArchivoUrl] = useState(null);
+  const [popupEstadoOpen, setPopupEstadoOpen] = useState(false);
   const [popupDocumentoUrl, setPopupDocumentoUrl] = useState(null);
 
   const { user } = useContext(AuthContext);
@@ -117,6 +120,12 @@ const Solicitud = () => {
     setIsPopupOpen(true);
   };
 
+  const handleClickEstado = () => {
+    if (dataSolicitud.length > 0) {
+      setPopupEstadoOpen(true);
+    }
+  };
+
   const handleUpdate = async (formData) => {
     try {
       const id = formData.get('id');
@@ -173,18 +182,28 @@ const Solicitud = () => {
 
   const abrirPopupArchivo = (url) => setPopupArchivoUrl(url);
   const cerrarPopupArchivo = () => setPopupArchivoUrl(null);
+
   const abrirPopupDocumento = (url) => setPopupDocumentoUrl(url);
   const cerrarPopupDocumento = () => setPopupDocumentoUrl(null);
 
   const columns = [
-    { title: 'ID', field: 'id', width: 50 },
-    { title: 'Tipo', field: 'tipo', width: 250 },
-    { title: 'Motivo', field: 'motivo', width: 250 },
-    { title: 'Estado', field: 'estado', width: 150 },
-    { title: 'Justificación', field: 'justificacionDeRechazo', width: 300 },
-    { title: 'Fecha de creación', field: 'fechaCreacion', width: 200 },
-    { title: 'Última actualización', field: 'fechaActualizacion', width: 200 },
-  ];
+  { title: 'ID', field: 'id', width: 50 },
+  { title: 'Tipo', field: 'tipo', width: 250 },
+  { title: 'Motivo', field: 'motivo', width: 250 },
+  { title: 'Estado', field: 'estado', width: 150 },
+  {
+  title: 'Justificación',
+  field: 'justificacionDeRechazo',
+  width: 300,
+  render: (row) => (
+    <div className="justificacion-text" title={row.justificacionDeRechazo || ''}>
+      {row.justificacionDeRechazo || ''}
+    </div>
+  ),
+},
+  { title: 'Fecha de creación', field: 'fechaCreacion', width: 200 },
+  { title: 'Última actualización', field: 'fechaActualizacion', width: 200 },
+];
 
   return (
     <div className="main-container">
@@ -197,25 +216,15 @@ const Solicitud = () => {
               onChange={handleTipoFilterChange}
               placeholder="Filtrar por tipo"
             />
-            <button
-              className="create-button"
-              onClick={handleClickCreate}
-              title="Solicitar documento"
-            >
+            <button className="create-button" onClick={handleClickCreate}>
               Solicitar documento
             </button>
+
             <button
               onClick={handleClickUpdate}
               disabled={
                 dataSolicitud.length === 0 ||
                 !puedeEditarSolicitud(dataSolicitud[0]?._rawFechaCreacion)
-              }
-              title={
-                dataSolicitud.length === 0
-                  ? 'Selecciona una solicitud para editar'
-                  : !puedeEditarSolicitud(dataSolicitud[0]?._rawFechaCreacion)
-                  ? 'Tiempo expirado para editar (2 minutos)'
-                  : 'Editar solicitud'
               }
             >
               <img
@@ -228,48 +237,52 @@ const Solicitud = () => {
                 alt="editar"
               />
             </button>
+
             <button
               className="delete-user-button"
               disabled={dataSolicitud.length === 0}
               onClick={() => handleDelete(dataSolicitud)}
-              title={
-                dataSolicitud.length === 0
-                  ? 'Selecciona una solicitud para eliminar'
-                  : 'Eliminar solicitud'
-              }
             >
               <img
                 src={dataSolicitud.length === 0 ? DeleteIconDisable : DeleteIcon}
                 alt="eliminar"
               />
             </button>
+
             {dataSolicitud.length > 0 && dataSolicitud[0].archivoUrl && (
               <button
                 className="create-button"
                 onClick={() => abrirPopupArchivo(dataSolicitud[0].archivoUrl)}
-                title="Ver archivo"
               >
                 Ver imagen
               </button>
             )}
+
             {dataSolicitud.length > 0 &&
               dataSolicitud[0].estado === 'aprobado' &&
               dataSolicitud[0].documentoUrl && (
                 <button
                   className="create-button"
                   onClick={() => abrirPopupDocumento(dataSolicitud[0].documentoUrl)}
-                  title="Ver documento PDF"
                 >
                   Ver documento
                 </button>
               )}
+
+            <button
+              className="create-button"
+              disabled={dataSolicitud.length === 0}
+              onClick={handleClickEstado}
+            >
+              Editar estado
+            </button>
           </div>
         </div>
+
         {loading && <p>Cargando solicitudes...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        {!loading && !error && solicitudes.length === 0 && (
-          <p>No hay solicitudes para mostrar.</p>
-        )}
+        {!loading && !error && solicitudes.length === 0 && <p>No hay solicitudes para mostrar.</p>}
+
         <Table
           data={solicitudes}
           columns={columns}
@@ -279,6 +292,7 @@ const Solicitud = () => {
           onSelectionChange={handleSelectionChange}
         />
       </div>
+
       <PopupSolicitud
         show={isPopupOpen}
         setShow={setIsPopupOpen}
@@ -300,8 +314,17 @@ const Solicitud = () => {
         mode={popupMode}
         usuarioId={user?.id}
       />
+
       <PopupArchivo url={popupArchivoUrl} onClose={cerrarPopupArchivo} />
       <PopupDocumento url={popupDocumentoUrl} onClose={cerrarPopupDocumento} />
+
+      <PopupEstado
+        show={popupEstadoOpen}
+        setShow={setPopupEstadoOpen}
+        solicitud={dataSolicitud[0]}
+        action={updateEstadoSolicitud}
+        onUpdated={fetchSolicitudes}
+      />
     </div>
   );
 };
