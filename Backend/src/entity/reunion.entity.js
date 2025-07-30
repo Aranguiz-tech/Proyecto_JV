@@ -45,14 +45,21 @@ const Reunion = new EntitySchema({
       nullable: false,
     },
   },
-  relations: {
-    asistencias: {
-      target: "Asistencia",
-      type: "one-to-many",
-      inverseSide: "reunion",
-      cascade: true,
-    },
+    relations: {
+     asistencias: {
+    target: "Asistencia",
+    type: "one-to-many",
+    inverseSide: "reunion",
+    cascade: true,
   },
+     acta: {
+    target: "Acta",
+    type: "one-to-one",
+    mappedBy: "reunion",
+    cascade: true,
+  },
+},
+
 });
 
 export default Reunion;

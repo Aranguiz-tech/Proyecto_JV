@@ -62,13 +62,22 @@ const handleRegister = async (data) => {
   }
 };
 
-  const columns = [
-    { title: "Fecha", field: "fecha", width: 150 },
-    { title: "Asunto", field: "asunto", width: 250 },
-    { title: "Lugar", field: "lugar", width: 250 },
-    { title: "Estado", field: "estado", width: 150 },
-    { title: "Motivo de cancelación", field: "motivo", width: 300 },
-  ];
+const columns = [
+  { title: "Fecha", field: "fecha", width: 150 },
+  { title: "Asunto", field: "asunto", width: 250 },
+  { title: "Lugar", field: "lugar", width: 250 },
+  {
+    title: "Estado",
+    field: "estado",
+    width: 150,
+    formatter: function (cell) {
+      const estado = cell.getValue();
+      return `<span class="estado-red">${estado}</span>`;
+    }
+  },
+  { title: "Motivo de cancelación", field: "motivo", width: 300 },
+];
+
 
   return (
     <div className='main-container'>

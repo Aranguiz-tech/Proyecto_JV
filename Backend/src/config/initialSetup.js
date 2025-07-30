@@ -34,7 +34,7 @@ async function createUsers() {
           rut: "21.151.897-9",
           email: "dilan@gmail.cl",
           telefono: "987654321",
-          password: await encryptPassword("dilan1234"),
+          password: await encryptPassword("Dilan12345"),
           rol: "administrador",
           hogar,
         })
