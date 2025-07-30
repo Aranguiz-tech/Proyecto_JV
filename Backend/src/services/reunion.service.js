@@ -2,9 +2,9 @@ import { AppDataSource } from "../config/configDb.js";
 
 export async function createReunionService(datos) {
   try {
-    const { asunto, fechaInicio } = datos;
+    const { asunto, fechaInicio, lugar } = datos;
 
-    if (!asunto || !fechaInicio ) {
+    if (!asunto || !fechaInicio || !lugar) {
       return [null, "Faltan campos obligatorios"];
     }
 
@@ -26,6 +26,7 @@ export async function createReunionService(datos) {
     const nuevaReunion = reunionRepo.create({
       asunto,
       fechaInicio,
+      lugar,
       estado: "programada",
     });
 

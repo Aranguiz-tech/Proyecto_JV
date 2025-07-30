@@ -39,7 +39,9 @@
 }
 
 .delete-user-button {
-    margin-right: 70px;
+    margin-right: 5px;
+    margin-left: 6px;
+    padding-left: 20px;
 }
 
 @media (max-width: 767px) {

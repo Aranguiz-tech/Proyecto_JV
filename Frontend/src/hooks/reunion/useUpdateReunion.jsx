@@ -4,22 +4,24 @@ import { showSuccessAlert, showErrorAlert } from '@helpers/sweetAlert';
 const useUpdateReunion = (fetchReuniones, setIsPopupOpen, setDataReunion) => {
   const handleUpdate = async (formData) => {
     try {
-      const { id, motivoCancelacion } = formData;
+      const { id, motivo, estado } = formData;
 
-      const response = await cancelarReunion(id, {
-        motivo: motivoCancelacion, 
-      });
-      
+      const response = await cancelarReunion(id, { motivo, estado });
+
       if (response && response.estado === "cancelada") {
         showSuccessAlert("¡Reunión cancelada!", "La reunión fue cancelada correctamente.");
-        fetchReuniones();
-        setIsPopupOpen(false);
-        setDataReunion([]);
+      } else if (response && response.estado === "realizada") {
+        showSuccessAlert("¡Reunión realizada!", "La reunión fue marcada como realizada.");
       } else {
-        showErrorAlert("Error", "No se pudo cancelar la reunión.");
+        showErrorAlert("Error", "No se pudo actualizar la reunión.");
+        return;
       }
+
+      fetchReuniones();
+      setIsPopupOpen(false);
+      setDataReunion([]);
     } catch (error) {
-      console.error("Error al cancelar reunión:", error);
+      console.error("Error al actualizar reunión:", error);
       showErrorAlert("Error", "Ocurrió un problema inesperado.");
     }
   };

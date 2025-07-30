@@ -18,6 +18,11 @@ const Reunion = new EntitySchema({
       type: "date",
       nullable: false,
     },
+    lugar: {
+      type: "varchar",
+      enum: ["Parque Ecuador", "Museo parque Ecuador"],
+      nullable: true,
+    },
     estado: {
       type: "enum",
       enum: ["programada", "realizada", "cancelada"],
