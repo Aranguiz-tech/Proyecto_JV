@@ -7,6 +7,8 @@ import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
+import SolicitudD from '@pages/SolicitudD';
+import Reuniones from '@pages/Reuniones/Reuniones';
 import CrearReunion from '@pages/Reuniones/CrearReunion';
 import Reuniones from '@pages/Reuniones/Reuniones';
 import CrearHogares from '@pages/Hogares/CrearHogares';
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: 'solicitudes',
         element: <Solicitud />
+      },
+      {
+        path: 'solicitudesD',
+        element: <SolicitudD />
+      },
+       {
+        path: 'hogares',
+        element: <Hogares />
       },
       {
         path: 'hogares/crear',

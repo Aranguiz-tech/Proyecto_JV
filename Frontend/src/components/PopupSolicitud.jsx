@@ -5,11 +5,11 @@ import CloseIcon from '@assets/XIcon.svg';
 
 const tiposDocumentos = [
   { value: "Certificado de Residencia", label: "Certificado de Residencia" },
-  { value: "Acta de reunion", label: "Acta de reunion" },
+  //{ value: "Acta de reunion", label: "Acta de reunion" },
 ];
 
 const motivosSolicitud = [
-  { value: "Para fines personales", label: "Para fines personales" },
+  //{ value: "Para fines personales", label: "Para fines personales" },
   { value: "Para fines laborales", label: "Para fines laborales" },
   { value: "Para fines escolares", label: "Para fines escolares" },
   { value: "Para fines judiciales", label: "Para fines judiciales" },
