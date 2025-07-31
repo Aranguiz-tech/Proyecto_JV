@@ -46,6 +46,16 @@ const CrearReunion = () => {
             fieldType: 'input',
             type: "date",
             required: true,
+          },
+          {
+            label: "Lugar de la reunión",
+            name: "lugar",
+            fieldType: 'select',
+            required: true,
+            options: [
+              { label: "Parque Ecuador", value: "Parque Ecuador" },
+              { label: "Museo parque Ecuador", value: "Museo parque Ecuador" }
+            ]
           }
         ]}
         buttonText="Crear reunión"

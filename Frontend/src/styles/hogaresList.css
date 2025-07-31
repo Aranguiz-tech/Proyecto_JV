@@ -1,0 +1,72 @@
+.main-containers {
+  background: linear-gradient(90deg, #25af372f, #152c1a17);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.top-tables {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.title-table-hogar {
+  font-size: 30px;
+  font-weight: 700;
+  color: #161616;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.hogares-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.hogar-card {
+  background-color: #f9fff9;
+  padding: 15px 25px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  border: 1px solid #c5e8ce;
+}
+
+.hogar-card:hover {
+  background-color: #4da56a;
+  color: white;
+  transform: scale(1.02);
+}
+
+.hogar-card.selected {
+  background-color: #72d16e;
+  border: 2px solid #3fb945;
+  color: white;
+}
+
+.direccion {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
