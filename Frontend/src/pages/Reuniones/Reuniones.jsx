@@ -10,6 +10,7 @@ import DeleteIconDisable from '@assets/deleteIconDisabled.svg';
 import CancelIcon from '@assets/updateIcon.svg';
 import CancelIconDisable from '@assets/updateIconDisabled.svg';
 import plus from '@assets/plus.svg';
+import playicon from '@assets/playicon.svg';
 import { useState } from 'react';
 import { createReunion } from '@services/reunion.service.js';
 import { showErrorAlert, showSuccessAlert } from '@helpers/sweetAlert.js';
@@ -37,47 +38,49 @@ const Reuniones = () => {
     if (dataReunion.length > 0) setIsPopupOpen(true);
   };
 
-const handleRegister = async (data) => {
-  try {
-    const response = await createReunion(data);
+  const handleRegister = async (data) => {
+    try {
+      const response = await createReunion(data);
 
-    if (response.status === 'Success') {
-      showSuccessAlert('¡Reunión creada!', 'Reunión registrada correctamente.');
-      fetchReuniones();
-      setIsPopupAgregarOpen(false);
-    } else if (response.status === 'Client error') {
-      if (response.details === 'Ya existe una reunión programada para esta fecha') {
-        showErrorAlert('Fecha duplicada', 'Ya hay una reunión programada para ese día.');
-      } else if (response.details === 'La fecha de inicio no puede ser anterior a hoy') {
-        showErrorAlert('Fecha inválida', 'No puedes agendar reuniones en fechas pasadas.');
+      if (response.status === 'Success') {
+        showSuccessAlert('¡Reunión creada!', 'Reunión registrada correctamente.');
+        fetchReuniones();
+        setIsPopupAgregarOpen(false);
+      } else if (response.status === 'Client error') {
+        if (response.details === 'Ya existe una reunión programada para esta fecha') {
+          showErrorAlert('Fecha duplicada', 'Ya hay una reunión programada para ese día.');
+        } else if (response.details === 'La fecha de inicio no puede ser anterior a hoy') {
+          showErrorAlert('Fecha inválida', 'No puedes agendar reuniones en fechas pasadas.');
+        } else {
+          showErrorAlert('Error', response.details);
+        }
       } else {
-        showErrorAlert('Error', response.details);
+        showErrorAlert("Error", "Error desconocido al crear reunión.");
       }
-    } else {
-      showErrorAlert("Error", "Error desconocido al crear reunión.");
+
+    } catch (error) {
+      showErrorAlert("Error", "No se pudo registrar la reunión.");
     }
+  };
 
-  } catch (error) {
-    showErrorAlert("Error", "No se pudo registrar la reunión.");
-  }
-};
+  const algunaEsRealizada = dataReunion.some(r => r.estado === 'realizada');
+  const todasSonProgramadas = dataReunion.every(r => r.estado === 'programada');
 
-const columns = [
-  { title: "Fecha", field: "fecha", width: 150 },
-  { title: "Asunto", field: "asunto", width: 250 },
-  { title: "Lugar", field: "lugar", width: 250 },
-  {
-    title: "Estado",
-    field: "estado",
-    width: 150,
-    formatter: function (cell) {
-      const estado = cell.getValue();
-      return `<span class="estado-red">${estado}</span>`;
-    }
-  },
-  { title: "Motivo de cancelación", field: "motivo", width: 300 },
-];
-
+  const columns = [
+    { title: "Fecha", field: "fecha", width: 150 },
+    { title: "Asunto", field: "asunto", width: 250 },
+    { title: "Lugar", field: "lugar", width: 250 },
+    {
+      title: "Estado",
+      field: "estado",
+      width: 150,
+      formatter: function (cell) {
+        const estado = cell.getValue();
+        return `<span class="estado-red">${estado}</span>`;
+      }
+    },
+    { title: "Motivo de cancelación", field: "motivo", width: 300 },
+  ];
 
   return (
     <div className='main-container'>
@@ -86,17 +89,46 @@ const columns = [
           <h1 className='title-table'>Reuniones</h1>
           <div className='filter-actions'>
             <Search value={filterFecha} onChange={handleFechaFilterChange} placeholder={'Filtrar por fecha'} />
-            <button onClick={handleClickCancelar} disabled={dataReunion.length === 0}>
-              <img src={dataReunion.length === 0 ? CancelIconDisable : CancelIcon} alt="cancelar" />
+
+            <button
+              onClick={handleClickCancelar}
+              disabled={dataReunion.length === 0 || !todasSonProgramadas}
+            >
+              <img
+                src={dataReunion.length === 0 || !todasSonProgramadas ? CancelIconDisable : CancelIcon}
+                alt="cancelar"
+              />
             </button>
-            <button className='delete-user-button' onClick={() => handleDelete(dataReunion)} disabled={dataReunion.length === 0}>
-              <img src={dataReunion.length === 0 ? DeleteIconDisable : DeleteIcon} alt="eliminar" />
+
+            <button
+              className='delete-user-button'
+              onClick={() => handleDelete(dataReunion)}
+              disabled={dataReunion.length === 0 || algunaEsRealizada}
+            >
+              <img
+                src={dataReunion.length === 0 || algunaEsRealizada ? DeleteIconDisable : DeleteIcon}
+                alt="eliminar"
+              />
             </button>
+
+            <button
+              className='delete-user-button'
+              onClick={() => {
+                if (dataReunion.length === 1 && dataReunion[0].estado === 'programada') {
+                  window.location.href = `/asistencia/${dataReunion[0].id}`;
+                }
+              }}
+              disabled={dataReunion.length !== 1 || dataReunion[0].estado !== 'programada'}
+            >
+              <img src={playicon} alt="iniciar" className="icono-reunion" />
+            </button>
+
             <button className='delete-user-button' onClick={() => setIsPopupAgregarOpen(true)}>
               <img src={plus} alt="add-reunion" />
             </button>
           </div>
         </div>
+
         <Table
           data={reuniones}
           columns={columns}
@@ -106,12 +138,14 @@ const columns = [
           onSelectionChange={handleSelectionChange}
         />
       </div>
+
       <PopupCancelarReunion
         show={isPopupOpen}
         setShow={setIsPopupOpen}
         data={dataReunion}
         action={handleUpdate}
       />
+
       <PopupAgregarReunion
         show={isPopupAgregarOpen}
         setShow={setIsPopupAgregarOpen}

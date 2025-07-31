@@ -6,10 +6,7 @@ import { isAdmin } from "../middlewares/authorization.middleware.js";
 
 const router = Router();
 
-router.use(authenticateJwt).use(isAdmin);
-
-router
-  .post("/", createActa)
-  .get("/:id", getActa);
+router.post("/", authenticateJwt, isAdmin, createActa);
+router.get("/:id", authenticateJwt, getActa);
 
 export default router;

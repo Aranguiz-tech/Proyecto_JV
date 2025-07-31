@@ -25,6 +25,11 @@
     color: #4f664f;
     margin-left: 70px;
 }
+.icono-reunion {
+  width: 20px;
+  height: 20px;
+}
+
 
 .filter-actions {
     display: flex;

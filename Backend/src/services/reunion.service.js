@@ -5,7 +5,7 @@ export async function createReunionService(datos) {
     const { asunto, fechaInicio, lugar } = datos;
 
     if (!asunto || !fechaInicio || !lugar) {
-      return [null, "Faltan campos obligatorios"];
+      return ["Faltan campos obligatorios"];
     }
 
 
@@ -13,14 +13,14 @@ export async function createReunionService(datos) {
 
     const existeReunion = await reunionRepo.findOne({ where: { fechaInicio } });
     if (existeReunion) {
-      return [null, "Ya existe una reunión programada para esta fecha"];
+      return ["Ya existe una reunión programada para esta fecha"];
     }
 
     const hoy = new Date();
     const fecha = new Date(fechaInicio);
 
     if (fecha < hoy) {
-      return [null, "La fecha de inicio no puede ser anterior a hoy"];
+      return [ "La fecha de inicio no puede ser anterior a hoy"];
     }
 
     const nuevaReunion = reunionRepo.create({
@@ -32,24 +32,30 @@ export async function createReunionService(datos) {
 
     await reunionRepo.save(nuevaReunion);
 
-    return [nuevaReunion, null];
+    return [nuevaReunion];
 
   } catch (error) {
     console.error("Error al crear reunión:", error);
-    return [null, "Error interno del servidor"];
+    return ["Error interno del servidor"];
   }
 }
 
 export async function getAllReunionesService() {
   try {
     const reunionRepo = AppDataSource.getRepository("Reunion");
-    const reuniones = await reunionRepo.find({ order: { fechaInicio: "ASC" } });
-    return [reuniones, null];
+
+    const reuniones = await reunionRepo.find({
+      relations: { acta: true }, 
+      order: { fechaInicio: "ASC" }
+    });
+
+    return [reuniones];
   } catch (error) {
     console.error("Error al obtener reuniones:", error);
-    return [null, "Error interno del servidor"];
+    return [ "Error interno del servidor"];
   }
 }
+
 
 export async function cancelarReunionService(id, motivo) {
   try {
@@ -57,11 +63,15 @@ export async function cancelarReunionService(id, motivo) {
 
     const reunion = await reunionRepo.findOne({ where: { id } });
     if (!reunion) {
-      return [null, "Reunión no encontrada"];
+      return [ "Reunión no encontrada"];
     }
 
     if (reunion.estado === "cancelada") {
-      return [null, "La reunión ya está cancelada"];
+      return [ "La reunión ya está cancelada"];
+    }
+
+    if (reunion.estado === "realizada") {
+      return [ "No puedes cancelar una reunión que ya fue realizada"];
     }
 
     reunion.estado = "cancelada";
@@ -69,13 +79,14 @@ export async function cancelarReunionService(id, motivo) {
 
     await reunionRepo.save(reunion);
 
-    return [reunion, null];
+    return [reunion];
 
   } catch (error) {
     console.error("Error al cancelar reunión:", error);
-    return [null, "Error interno del servidor"];
+    return [ "Error interno del servidor"];
   }
 }
+
 
 export async function deleteReunionService(id) {
   try {
@@ -83,13 +94,35 @@ export async function deleteReunionService(id) {
 
     const reunion = await reunionRepo.findOne({ where: { id } });
     if (!reunion) {
-      return [null, "Reunión no encontrada"];
+      return [ "Reunión no encontrada"];
+    }
+
+    if (reunion.estado === "realizada") {
+      return ["No puedes eliminar una reunión que ya fue realizada"];
     }
 
     await reunionRepo.remove(reunion);
     return [reunion, null];
   } catch (error) {
     console.error("Error al eliminar reunión:", error);
-    return [null, "Error interno del servidor"];
+    return [ "Error interno del servidor"];
   }
+}
+
+export async function finalizarReunionService(id) {
+  const repo = AppDataSource.getRepository("Reunion");
+  const reunion = await repo.findOne({ where: { id } });
+
+  if (!reunion)
+    return ["Reunión no encontrada"];
+
+  if (reunion.estado !== "programada")
+    return ["Solo puedes finalizar reuniones programadas"];
+
+  reunion.estado = "realizada";
+  reunion.fechaActualizacion = new Date();
+
+  await repo.save(reunion);
+
+  return [reunion];
 }

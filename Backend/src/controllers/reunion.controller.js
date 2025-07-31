@@ -3,7 +3,8 @@ import {
   createReunionService,
   getAllReunionesService,
   cancelarReunionService,
-  deleteReunionService
+  deleteReunionService,
+  finalizarReunionService
 } from "../services/reunion.service.js";
 import {
   handleErrorClient,
@@ -72,6 +73,22 @@ export async function deleteReunion(req, res) {
       return handleErrorClient(res, 404, "Error al eliminar reunión", error);
 
     handleSuccess(res, 200, "Reunión eliminada correctamente", reunionEliminada);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+export async function finalizarReunion(req, res) {
+  try {
+    const { id } = req.params;
+    const { acta } = req.body;
+
+    const resultado = await finalizarReunionService(id, acta);
+
+    if (resultado.status === "Error") {
+      return handleErrorClient(res, 400, "Error al finalizar reunión", resultado.message);
+    }
+
+    handleSuccess(res, 200, "Reunión finalizada correctamente", resultado.data);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

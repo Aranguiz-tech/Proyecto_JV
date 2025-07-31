@@ -7,13 +7,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(sessionStorage.getItem('usuario')) || '';
-  const userRole = user?.rol;
+  const userRole = user?.rol?.toLowerCase();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const logoutSubmit = () => {
     try {
       logout();
-      navigate('/auth'); 
+      navigate('/auth');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
@@ -42,7 +42,6 @@ const Navbar = () => {
     });
   };
 
-
   return (
     <nav className="navbar">
       <div className={`nav-menu ${menuOpen ? 'activado' : ''}`}>
@@ -50,92 +49,93 @@ const Navbar = () => {
           <li>
             <NavLink 
               to="/home" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
+              onClick={() => { setMenuOpen(false); addActiveClass(); }} 
               className={({ isActive }) => (isActive ? 'active' : '')}
             >
               Inicio
             </NavLink>
           </li>
+
           {userRole === 'administrador' && (
-            <li>
-              <NavLink 
-                to="/users" 
-                onClick={() => { 
-                  setMenuOpen(false); 
-                  addActiveClass();
-                }} 
-                className={({ isActive }) => (isActive ? 'active' : '')}
-              >
-                Usuarios
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink 
+                  to="/users" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Usuarios
+                </NavLink>
+              </li>
+              <li>
+                <NavLink 
+                  to="/hogares" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Hogares
+                </NavLink>
+              </li>
+              <li>
+                <NavLink 
+                  to="/solicitudesD" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Solicitudes
+                </NavLink>
+              </li>
+              <li>
+                <NavLink 
+                  to="/reuniones" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Reuniones
+                </NavLink>
+              </li>
+            </>
           )}
-          {userRole === 'administrador' && (
-            <li>
-              <NavLink 
-                to="/Hogares" 
-                onClick={() => { 
-                  setMenuOpen(false); 
-                  addActiveClass();
-                }} 
-                activeClassName="active"
-              >
-                Hogares
-              </NavLink>
-            </li>
-          )}        
-          {userRole === 'administrador' && (
-            <li>
-              <NavLink
-              to={"/solicitudesD"}
-              onClick={() => {
-                setMenuOpen(false);
-                addActiveClass();
-              }}
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Solicitudes
-            </NavLink>
-            </li>
+
+          {(userRole === 'jefe de hogar' || userRole === 'vecino') && (
+            <>
+              <li>
+                <NavLink 
+                  to="/reuniones/ver" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Reuniones
+                </NavLink>
+              </li>
+              <li>
+                <NavLink 
+                  to="/hogares/ver" 
+                  onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  Hogares
+                </NavLink>
+              </li>
+            </>
           )}
-          {userRole === 'administrador' && (
-            <li>
-            <NavLink 
-              to="/reuniones" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Reuniones
-            </NavLink>
-          </li>
-          )}
+
           {userRole === 'jefe de hogar' && (
             <li>
-            <NavLink 
-              to="/solicitudes" 
-              onClick={() => { 
-                setMenuOpen(false); 
-                addActiveClass();
-              }} 
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Solicitudes
-            </NavLink>
-          </li>
+              <NavLink 
+                to="/solicitudes" 
+                onClick={() => { setMenuOpen(false); addActiveClass(); }} 
+                className={({ isActive }) => (isActive ? 'active' : '')}
+              >
+                Solicitudes
+              </NavLink>
+            </li>
           )}
+
           <li>
             <NavLink 
               to="/auth" 
-              onClick={() => { 
-                logoutSubmit(); 
-                setMenuOpen(false); 
-              }} 
+              onClick={() => { logoutSubmit(); setMenuOpen(false); }} 
               className={({ isActive }) => (isActive ? 'active' : '')}
             >
               Cerrar sesión
@@ -143,6 +143,7 @@ const Navbar = () => {
           </li>
         </ul>
       </div>
+
       <div className="hamburger" onClick={toggleMenu}>
         <span className="bar"></span>
         <span className="bar"></span>
@@ -150,7 +151,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-
 };
 
 export default Navbar;

@@ -5,6 +5,7 @@ import {
   getHogarService,
   updateHogarService,
   deleteHogarService,
+  getUsuariosPorHogarService
 } from "../services/hogar.service.js";
 
 import {
@@ -101,5 +102,19 @@ export async function deleteHogar(req, res) {
     return handleSuccess(res, 200, "Hogar eliminado correctamente", hogarEliminado);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getUsuariosPorHogar(req, res) {
+  try {
+    const { id } = req.params
+    const [usuarios, error] = await getUsuariosPorHogarService(id)
+    if (error) {
+      return res.status(404).json({ status: "Error", message: error })
+    }
+    return res.status(200).json({ status: "Success", data: usuarios })
+  } catch (error) {
+    console.error("Error en getUsuariosPorHogar:", error)
+    return res.status(500).json({ status: "Error", message: "Error del servidor" })
   }
 }
