@@ -31,6 +31,7 @@ const useGetReuniones = () => {
           asunto: reunion.asunto,
           fecha: reunion.fechaInicio,
           estado: reunion.estado,
+          lugar: reunion.lugar,
           motivo,
         };
       });

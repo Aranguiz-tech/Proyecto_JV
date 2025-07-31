@@ -19,6 +19,15 @@ export async function getHogares() {
     return error.response?.data || null;
   }
 }
+export async function getAllHogares(id) {
+  try {
+    const { data } = await axios.get(`/hogar/${id}`);
+    return data.data;
+  } catch (error) {
+    console.error("Error en getAllHogares:", error);
+    return error.response?.data || null;
+  }
+}
 
 export async function deleteHogar(id) {
   try {
@@ -39,4 +48,15 @@ export async function updateHogar(id, nuevaDireccion) {
     return error.response?.data || null;
   }
 }
+
+export async function getUsuariosPorHogar(id) {
+  try {
+    const { data } = await axios.get(`/hogar/usuarios/${id}`);
+    return data.data;
+  } catch (error) {
+    console.error("Error al obtener usuarios del hogar:", error);
+    return [];
+  }
+}
+
 
