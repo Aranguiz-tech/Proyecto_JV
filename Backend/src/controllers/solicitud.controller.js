@@ -2,6 +2,7 @@
 import {
   createSolicitudService,
   deleteSolicitudService,
+  getSolicitudesPorRutService,
   getSolicitudesService,
   getSolicitudPorIdService,
   updateEstadoSolicitudService,
@@ -44,6 +45,26 @@ export async function getSolicitudPorId(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+
+export async function getSolicitudesPorUser(req, res) {
+  try {
+    const rut = req.user?.rut;
+    if (!rut) return handleErrorClient(res, 400, "RUT del usuario no proporcionado");
+
+    const [solicitudes, error] = await getSolicitudesPorRutService(rut);
+
+    if (error) return handleErrorServer(res, error, "Error al obtener solicitudes");
+
+    return res.status(200).json({
+      message: "Solicitudes obtenidas correctamente",
+      data: solicitudes
+    });
+  } catch (err) {
+    return handleErrorServer(res, err, "Error inesperado al obtener solicitudes");
+  }
+}
+
+
 
 export async function getSolicitudes(req, res) {
   try {

@@ -43,6 +43,25 @@ export async function getSolicitudPorIdService(id) {
   }
 }
 
+export async function getSolicitudesPorRutService(rut) {
+  try {
+    const solicitudRepo = AppDataSource.getRepository("Solicitud");
+
+    const solicitudes = await solicitudRepo
+      .createQueryBuilder("solicitud")
+      .leftJoinAndSelect("solicitud.usuario", "usuario")
+      .where("usuario.rut = :rut", { rut })
+      .orderBy("solicitud.id", "DESC")
+      .getMany();
+
+    return [solicitudes, null];
+  } catch (error) {
+    return [null, error];
+  }
+}
+
+
+
 export async function getSolicitudesService() {
   try {
     const SolRepo = AppDataSource.getRepository("Solicitud");

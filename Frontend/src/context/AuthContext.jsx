@@ -8,6 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const user = JSON.parse(sessionStorage.getItem('usuario')) || null;
+  const token = sessionStorage.getItem('token') || null;
   const isAuthenticated = !!user;
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export function AuthProvider({ children }) {
   }, [isAuthenticated, navigate]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, token }}>
       {children}
     </AuthContext.Provider>
   );
