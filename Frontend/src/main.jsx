@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       {
         path: 'reuniones/ver',
         element: (
-          <ProtectedRoute allowedRoles={['administrador', 'jefe_hogar', 'vecino']}>
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
             <VistaReuniones />
           </ProtectedRoute>
         )
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
       {
         path: 'solicitudes',
         element: (
-          <ProtectedRoute allowedRoles={['administrador']}>
+          <ProtectedRoute allowedRoles={['jefe de hogar']}>
             <Solicitud />
           </ProtectedRoute>
         )
@@ -86,7 +86,7 @@ const router = createBrowserRouter([
       {
         path: 'hogares',
         element: (
-          <ProtectedRoute allowedRoles={['administrador', 'jefe_hogar', 'vecino']}>
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
             <Hogares />
           </ProtectedRoute>
         )
@@ -94,7 +94,7 @@ const router = createBrowserRouter([
       {
         path: 'hogares/ver',
         element: (
-          <ProtectedRoute allowedRoles={['administrador', 'jefe_hogar', 'vecino']}>
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
             <VistaHogares />
           </ProtectedRoute>
         )
