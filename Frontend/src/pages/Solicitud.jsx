@@ -72,10 +72,10 @@ const Solicitud = () => {
           fechaActualizacion: formatearFecha(solicitud.fechaActualizacion),
           _rawFechaCreacion: solicitud.fechaCreacion,
           archivoUrl: solicitud.archivoRuta
-            ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.archivoRuta}`
+            ? `${import.meta.env.VITE_BASE_URL.replace('/api', '')}/${solicitud.archivoRuta}`
             : null,
           documentoUrl: solicitud.documentoRuta
-            ? `${import.meta.env.VITE_BACKEND_URL.replace('/api', '')}/${solicitud.documentoRuta}`
+            ? `${import.meta.env.VITE_BASE_URL.replace('/api', '')}/${solicitud.documentoRuta}`
             : null,
         }));
         setSolicitudes(solicitudesFormateadas);

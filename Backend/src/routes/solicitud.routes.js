@@ -27,7 +27,8 @@ router.get("/:id", getSolicitudPorId);
 
 router.get("/", getSolicitudes);
 router.delete("/:id", deleteSolicitud);
-router.put("/:id", uploadFile.single("archivo"), updateSolicitud);
 router.put("/estado/:id", updateEstadoSolicitud);
+router.put("/:id", uploadFile.single("archivo"), updateSolicitud);
+
 
 export default router;
