@@ -44,7 +44,7 @@ async function createUsers() {
           nombre: "Gabriel",
           apellido: "Guzmán",
           rut: "21.357.093-5",
-          email: "gabriel@gmail.cl",
+          email: "wolffg91@gmail.com",
           telefono: "993586086",
           password: await encryptPassword("gabriel1234"),
           rol: "administrador",

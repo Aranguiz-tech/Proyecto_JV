@@ -3,6 +3,7 @@ import {
     createSolicitud,
     deleteSolicitud, 
     getSolicitudes, 
+    getSolicitudesPorUser,
     getSolicitudPorId, 
     updateEstadoSolicitud,
     updateSolicitud
@@ -19,10 +20,15 @@ router.post(
   uploadFile.single("archivo"),
   createSolicitud
 );
+
+router.get("/usuario", authenticateJwt, getSolicitudesPorUser);
 router.get("/:id", getSolicitudPorId);
+
+
 router.get("/", getSolicitudes);
 router.delete("/:id", deleteSolicitud);
-router.put("/:id", uploadFile.single("archivo"), updateSolicitud);
 router.put("/estado/:id", updateEstadoSolicitud);
+router.put("/:id", uploadFile.single("archivo"), updateSolicitud);
+
 
 export default router;
