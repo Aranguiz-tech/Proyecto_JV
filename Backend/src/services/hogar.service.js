@@ -40,7 +40,7 @@ export async function getHogarService(id) {
     const hogar = await hogarRepo.findOne({ where: { id } });
     if (!hogar) return ["Hogar no encontrado"];
 
-    return [hogar, null];
+    return [hogar];
   } catch (error) {
     console.error("Error al buscar hogar:", error);
     return ["Error interno del servidor"];
@@ -83,4 +83,18 @@ export async function deleteHogarService(id) {
     console.error("Error al eliminar hogar:", error);
     return ["Error interno del servidor"];
   }
+}
+
+export async function getUsuariosPorHogarService(id) {
+  const repo = AppDataSource.getRepository("Hogar")
+  const hogar = await repo.findOne({ where: { id }, relations: ["usuarios"] })
+  if (!hogar) return ["No existe"]
+  const usuarios = hogar.usuarios.map(u => {
+    return {
+      nombre: u.nombre,
+      apellido: u.apellido,
+      email: u.email
+    }
+  })
+  return [usuarios]
 }

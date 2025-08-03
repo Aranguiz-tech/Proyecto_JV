@@ -30,11 +30,6 @@ const User = new EntitySchema({
       length: 50,
       nullable: false,
     },
-    // direccion: {
-    //   type: "varchar",
-    //   length: 100,
-    //   nullable: false,
-    // },
     telefono: {
       type: "varchar",
       length: 15,
@@ -72,12 +67,6 @@ const User = new EntitySchema({
       inverseSide: "usuarios",
       onDelete: "CASCADE" 
     },
-    /*asistencias: {
-      target: "Asistencia",
-      type: "one-to-many",
-      inverseSide: "usuario",
-    },
-  */ 
  solicitudes: {
       type: "one-to-many",
       target: "Solicitud",

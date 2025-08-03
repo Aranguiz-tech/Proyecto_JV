@@ -3,18 +3,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from '@pages/Login';
 import Home from '@pages/Home';
 import Users from '@pages/Users';
-import Register from '@pages/Register';
 import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
 import SolicitudD from '@pages/SolicitudD';
-import Reuniones from '@pages/Reuniones/Reuniones';
 import CrearReunion from '@pages/Reuniones/CrearReunion';
-import VerReuniones from '@pages/Reuniones/VerReuniones';
-import Hogares from '@pages/Hogares/Hogares';
+import Reuniones from '@pages/Reuniones/Reuniones';
+import VistaReuniones from '@pages/Reuniones/VistaReuniones';
 import CrearHogares from '@pages/Hogares/CrearHogares';
-import VerHogares from '@pages/Hogares/VerHogares';
+import Hogares from '@pages/Hogares/Hogares';
+import VistaHogares from '@pages/Hogares/VistaHogares';
+import Asistencia from '@pages/Reuniones/Asistencia';
 import '@styles/styles.css';
 
 const router = createBrowserRouter([
@@ -36,47 +36,82 @@ const router = createBrowserRouter([
         )
       },
       {
-      path: 'reuniones',
-      element: <Reuniones />
-    },
-    {
-      path: 'reuniones/crear',
-      element: <CrearReunion />
-    },
-        {
-      path: 'reuniones/ver',
-      element: <VerReuniones />
-    },
-
+        path: 'reuniones/crear',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <CrearReunion />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: 'reuniones',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <Reuniones />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: 'reuniones/ver',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
+            <VistaReuniones />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: 'asistencia/:id',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <Asistencia />
+          </ProtectedRoute>
+        )
+      },
       {
         path: 'solicitudes',
-        element: <Solicitud />
+        element: (
+          <ProtectedRoute allowedRoles={['jefe de hogar']}>
+            <Solicitud />
+          </ProtectedRoute>
+        )
       },
       {
         path: 'solicitudesD',
-        element: <SolicitudD />
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <SolicitudD />
+          </ProtectedRoute>
+        )
       },
-       {
+      {
         path: 'hogares',
-        element: <Hogares />
+        element: (
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
+            <Hogares />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: 'hogares/ver',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
+            <VistaHogares />
+          </ProtectedRoute>
+        )
       },
       {
         path: 'hogares/crear',
-        element: <CrearHogares />
-      },
-       {
-        path: 'hogares/ver',
-        element: <VerHogares />
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <CrearHogares />
+          </ProtectedRoute>
+        )
       }
     ]
   },
   {
     path: 'auth',
     element: <Login />
-  },
-  {
-    path: 'register',
-    element: <Register />
   }
 ]);
 

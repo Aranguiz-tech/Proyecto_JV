@@ -1,0 +1,31 @@
+.home-fondo {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(226, 220, 220);
+  z-index: 1;
+  overflow: hidden;
+  text-shadow: 1px 1px 5px rgb(248, 252, 247);
+}
+
+.home-fondo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/Parque.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3; 
+  z-index: -1;
+}
+
+.titulo {
+  font-size: 3.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+}

@@ -1,18 +1,19 @@
-
 .boton-verde-suave {
   padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  min-width: 250px;
-  min-height: 80px;
-  background-color: rgba(236, 241, 236, 0.753); 
-  color: #121812;
-  border: 2px solid #2E7D32;
+  font-size: 1.1rem;
   font-weight: bold;
-  transition: background-color 0.2s ease;
+  min-width: 220px;
+  min-height: 70px;
+  background-color: #e8f5e9; 
+  color: #2E7D32; 
+  border: 3px solid #2E7D32; 
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .boton-verde-suave:hover {
-  background-color: rgba(46, 125, 50, 0.2);
+  background-color: #2E7D32;
+  color: #ffffff;
 }

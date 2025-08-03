@@ -1,0 +1,61 @@
+.reuniones-todo {
+  padding: 100px 20px 20px 20px; 
+}
+
+.reunion-grande {
+  border: 2px solid #3b82f6;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  background-color: #ebf4ff;
+}
+
+.otras-reuniones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reunion-chica {
+  border: 1px solid gray;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reunion-chica.programada {
+  background-color: #e6ffed;
+}
+
+.reunion-chica.realizada {
+  background-color: #393f3c3f;
+}
+
+.reunion-chica.cancelada {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.estado-text {
+  margin: 4px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.estado-text.programada {
+  color: rgb(19, 21, 160);
+}
+
+.estado-text.realizada {
+  color: rgba(61, 122, 64, 0.87);
+}
+
+.estado-text.cancelada {
+  color: red;
+}
+
+button {
+  margin-top: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+}

@@ -1,14 +1,39 @@
 .table-container .tabulator .tabulator-col {
-  background-color: #3fb945c0; 
-  color: #fff;
+  background-color: #3fb945c0;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: 'Segoe UI', sans-serif;
 }
+
+.tabulator .tabulator-cell {
+  padding: 12px 10px;
+  font-size: 16px;
+  color: #2f2f2f;
+  font-weight: 500;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.tabulator .tabulator-footer {
+  border-top: 1px solid #53aa69;
+  padding-top: 10px;
+}
+
 .tabulator .tabulator-footer .tabulator-page {
-    background-color: #fff;
-    color: #2e8b3f;
-    border: 1px solid #53aa69;
-    padding: 4px 8px;
-    border-radius: 4px;
+  background-color: #ffffff;
+  color: #2e8b3f;
+  border: 1px solid #53aa69;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
 }
+
 .tabulator .tabulator-footer .tabulator-page.active {
-    color: #4c7248;
+  background-color: #4da56a;
+  color: white;
+  font-weight: 600;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '@styles/popup.css';
+import '@styles/popupAdaptable.css';
 import CloseIcon from '@assets/XIcon.svg';
 
 export default function PopupEstado({ show, setShow, solicitud, action, onUpdated }) {
@@ -59,6 +59,7 @@ export default function PopupEstado({ show, setShow, solicitud, action, onUpdate
               required
               className="input"
             >
+              <option value="pendiente">Pendiente</option>
               <option value="aprobado">Aprobado</option>
               <option value="rechazado">Rechazado</option>
             </select>

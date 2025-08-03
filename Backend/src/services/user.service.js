@@ -15,7 +15,7 @@ export async function getUserService(query) {
     if (!usuario) return [null, "Usuario no encontrado"];
 
     const { password, ...data } = usuario;
-    return [data, null];
+    return [data];
   } catch (error) {
     console.error("Error al buscar usuario:", error);
     return [null, "Error interno del servidor"];
@@ -32,7 +32,7 @@ export async function getUsersService() {
 
     const usuariosLimpios = usuarios.map(({ password, ...rest }) => rest);
 
-    return [usuariosLimpios, null];
+    return [usuariosLimpios];
   } catch (error) {
     console.error("Error al listar usuarios:", error);
     return [null, "Error interno del servidor"];

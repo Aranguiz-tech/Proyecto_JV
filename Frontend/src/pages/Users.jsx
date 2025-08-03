@@ -2,18 +2,23 @@ import Table from '@components/Table';
 import useUsers from '@hooks/users/useGetUsers.jsx';
 import Search from '../components/Search';
 import Popup from '../components/Popup';
+import PopupAgregar from '../components/PopupAgregar';
 import DeleteIcon from '../assets/deleteIcon.svg';
 import UpdateIcon from '../assets/updateIcon.svg';
 import UpdateIconDisable from '../assets/updateIconDisabled.svg';
 import DeleteIconDisable from '../assets/deleteIconDisabled.svg';
+import plus from '../assets/plus.svg';
 import { useCallback, useState } from 'react';
 import '@styles/users.css';
 import useEditUser from '@hooks/users/useEditUser';
 import useDeleteUser from '@hooks/users/useDeleteUser';
+import { register } from '@services/auth.service'; 
+import { showSuccessAlert, showErrorAlert } from '@helpers/sweetAlert';
 
 const Users = () => {
   const { users, fetchUsers, setUsers } = useUsers();
   const [filterRut, setFilterRut] = useState('');
+  const [isPopupAgregarOpen, setIsPopupAgregarOpen] = useState(false);
 
   const {
     handleClickUpdate,
@@ -34,12 +39,32 @@ const Users = () => {
     setDataUser(selectedUsers);
   }, [setDataUser]);
 
+  const handleRegister = async (data) => {
+    try {
+      const response = await register(data);
+      if (response.status === 'Success') {
+        showSuccessAlert('¡Usuario creado!', 'Usuario registrado correctamente.');
+        fetchUsers();
+        setIsPopupAgregarOpen(false);
+        return [response.data, null];
+      }
+      if (response.status === 'Client error') {
+        return [null, response.details];
+      }
+      return [null, { dataInfo: 'email', message: 'Error desconocido' }];
+    } catch (error) {
+      console.error("Error al registrar usuario:", error);
+      showErrorAlert("Error", "No se pudo registrar el usuario.");
+      return [null, { dataInfo: 'email', message: 'Error inesperado del servidor' }];
+    }
+  };
+
   const columns = [
-    { title: "Nombre", field: "nombre", width: 200, responsive: 0 },
-    { title: "Apellido", field: "apellido", width: 200, responsive: 1 },
+    { title: "Nombre", field: "nombre", width: 150, responsive: 0 },
+    { title: "Apellido", field: "apellido", width: 150, responsive: 1 },
     { title: "Correo electrónico", field: "email", width: 200, responsive: 3 },
     { title: "Rut", field: "rut", width: 150, responsive: 2 },
-    { title: "Rol", field: "rol", width: 100, responsive: 2 },
+    { title: "Rol", field: "rol", width: 150, responsive: 2 },
     { title: "dirección", field: "direccion", width: 300, responsive: 3 },
   ];
 
@@ -64,6 +89,9 @@ const Users = () => {
                 <img src={DeleteIcon} alt="delete" />
               )}
             </button>
+            <button className='delete-user-button' onClick={() => setIsPopupAgregarOpen(true)}>
+              <img src={plus} alt="add-user" />
+            </button>
           </div>
         </div>
         <Table
@@ -77,6 +105,7 @@ const Users = () => {
         />
       </div>
       <Popup show={isPopupOpen} setShow={setIsPopupOpen} data={dataUser} action={handleUpdate} />
+      <PopupAgregar show={isPopupAgregarOpen} setShow={setIsPopupAgregarOpen} action={handleRegister} />
     </div>
   );
 };

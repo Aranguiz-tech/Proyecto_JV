@@ -1,5 +1,5 @@
 .main-container {
-    background-color: #e8f5e9;
+    background-color: #4eb457;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -25,6 +25,11 @@
     color: #4f664f;
     margin-left: 70px;
 }
+.icono-reunion {
+  width: 20px;
+  height: 20px;
+}
+
 
 .filter-actions {
     display: flex;
@@ -37,9 +42,16 @@
         
     }
 }
+.estado-red {
+  color: #c0392b;
+  font-weight: bold;
+  text-transform: capitalize;
+}
 
 .delete-user-button {
-    margin-right: 70px;
+    margin-right: 5px;
+    margin-left: 6px;
+    padding-left: 20px;
 }
 
 @media (max-width: 767px) {

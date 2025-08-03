@@ -39,3 +39,13 @@ export async function cancelarReunion(id, motivo) {
     return error.response?.data || null;
   }
 }
+
+export async function finalizarReunion(id) {
+  try {
+    const { data } = await axios.patch(`/reunion/finalizar/${id}`);
+    return data;
+  } catch (error) {
+    console.error("Error al finalizar reunión:", error);
+    return error.response?.data || null;
+  }
+}

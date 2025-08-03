@@ -10,57 +10,67 @@ function useTable({ data, columns, filter, dataToFilter, initialSortName, onSele
 
     useEffect(() => {
         if (tableRef.current) {
-            const updatedColumns = [
-                { 
-                    formatter: "rowSelection", 
-                    titleFormatter: false, 
-                    hozAlign: "center", 
-                    headerSort: false, 
-                    cellClick: function (e, cell) {
-                        cell.getRow().toggleSelect();
-                    } 
+            const sanitizedColumns = columns.map((col) => {
+            const { render, ...rest } = col;
+            return rest;
+        });
+
+        const updatedColumns = [{
+            formatter: "rowSelection",
+            titleFormatter: false,
+            hozAlign: "center",
+            headerSort: false,
+            cellClick: function (e, cell) {
+                cell.getRow().toggleSelect();
+            },
+            },
+            ...sanitizedColumns,
+        ];
+
+        const tabulatorTable = new Tabulator(tableRef.current, {
+            data: [],
+            columns: updatedColumns,
+            layout: "fitColumns",
+            responsiveLayout: "collapse",
+            pagination: true,
+            paginationSize: 6,
+            selectableRows: 1,
+            rowHeight: 46,
+            langs: {
+                default: {
+                pagination: {
+                    first: "Primero",
+                    prev: "Anterior",
+                    next: "Siguiente",
+                    last: "Último",
                 },
-                ...columns
-            ];
-            const tabulatorTable = new Tabulator(tableRef.current, {
-                data: [],
-                columns: updatedColumns,
-                layout: "fitColumns",
-                responsiveLayout: "collapse",
-                pagination: true,
-                paginationSize: 6,
-                selectableRows: 1,
-                rowHeight: 46,
-                langs: {
-                    "default": {
-                        "pagination": {
-                            "first": "Primero",
-                            "prev": "Anterior",
-                            "next": "Siguiente",
-                            "last": "Último",
-                        }
-                    }
-                },
-                initialSort: [
-                    { column: initialSortName, dir: "asc" }
-                ],
-            });
-            tabulatorTable.on("rowSelectionChanged", function(selectedData) {
-                if (onSelectionChange) {
-                    onSelectionChange(selectedData);
-                }
-            });
-            tabulatorTable.on("tableBuilt", function() {
-                setIsTableBuilt(true);
-            });
-            setTable(tabulatorTable);
-            return () => {
-                tabulatorTable.destroy();
-                setIsTableBuilt(false);
-                setTable(null);
-            };
-        }
-    }, []);
+            },
+        },
+        initialSort: [
+            { column: initialSortName, dir: "asc" },
+        ],
+    });
+
+    tabulatorTable.on("rowSelectionChanged", function (selectedData) {
+      if (onSelectionChange) {
+        onSelectionChange(selectedData);
+      }
+    });
+
+    tabulatorTable.on("tableBuilt", function () {
+      setIsTableBuilt(true);
+    });
+
+    setTable(tabulatorTable);
+
+    return () => {
+      tabulatorTable.destroy();
+      setIsTableBuilt(false);
+      setTable(null);
+    };
+  }
+}, []);
+
 
     useEffect(() => {
         if (table && isTableBuilt) {

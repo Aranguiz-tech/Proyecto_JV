@@ -27,23 +27,24 @@ const Hogar = new EntitySchema({
       nullable: false,
     },
   },
-  relations: {
-    usuarios: {
-      target: "Usuario",
-      type: "one-to-many",
-      inverseSide: "hogar",
-    },
-    /*asistencias: {
-      target: "Asistencia",
-      type: "one-to-many",
-      inverseSide: "hogar",
-    },*/
-    reuniones: {
-      target: "Reunion",
-      type: "one-to-many",
-      inverseSide: "hogar",
-    },
+   relations: {
+  usuarios: {
+    target: "Usuario",
+    type: "one-to-many",
+    inverseSide: "hogar",
   },
+  asistencias: {
+    target: "Asistencia",
+    type: "one-to-many",
+    inverseSide: "hogar",
+  },
+  reuniones: {
+    target: "Reunion",
+    type: "one-to-many",
+    inverseSide: "hogar",
+  },
+  },
+
 });
 
 export default Hogar;
