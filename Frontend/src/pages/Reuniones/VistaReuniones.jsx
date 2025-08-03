@@ -27,7 +27,7 @@ export default function VistaReuniones() {
 
       {futura && (
         <article className="reunion-grande futura">
-          <h2>📅 Próxima reunión</h2>
+          <h2>Próxima reunión</h2>
           <p><strong>Asunto:</strong> {futura.asunto}</p>
           <p className={`estado-text ${futura.estado}`}><strong>Estado:</strong> {futura.estado}</p>
           <p><strong>Fecha:</strong> {futura.fecha}</p>

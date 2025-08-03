@@ -22,7 +22,7 @@ const PopupVistaHogares = ({ show, setShow, hogarId }) => {
   return (
     <div className="popup-fondo" onClick={() => setShow(false)}>
       <div className="popup-ver" onClick={(e) => e.stopPropagation()}>
-        <h2 className="title">🏠 Detalles del hogar</h2>
+        <h2 className="title">Detalles del hogar</h2>
 
         <div className="fila">
           <p className="label">Dirección:</p>
@@ -34,17 +34,33 @@ const PopupVistaHogares = ({ show, setShow, hogarId }) => {
           <p className="valor">{usuarios.length}</p>
         </div>
 
-        {usuarios.length > 0 && (
+        {usuarios.length >= 1 && (
           <div className="residentes-lista">
-            {usuarios.map((u, i) => (
-              <div key={i} className="residente">
-                <p className="rol">• {u.rol}:</p>
-                <p className="nombre">
-                  {u.nombre} {u.apellido}
-                </p>
-                <p className="email">{u.email}</p>
-              </div>
-            ))}
+            <div className="residente">
+              <p className="rol">• {usuarios[0].rol}:</p>
+              <p className="nombre">{usuarios[0].nombre} {usuarios[0].apellido}</p>
+              <p className="email">{usuarios[0].email}</p>
+            </div>
+          </div>
+        )}
+
+        {usuarios.length >= 2 && (
+          <div className="residentes-lista">
+            <div className="residente">
+              <p className="rol">• {usuarios[1].rol}:</p>
+              <p className="nombre">{usuarios[1].nombre} {usuarios[1].apellido}</p>
+              <p className="email">{usuarios[1].email}</p>
+            </div>
+          </div>
+        )}
+
+        {usuarios.length >= 3 && (
+          <div className="residentes-lista">
+            <div className="residente">
+              <p className="rol">• {usuarios[2].rol}:</p>
+              <p className="nombre">{usuarios[2].nombre} {usuarios[2].apellido}</p>
+              <p className="email">{usuarios[2].email}</p>
+            </div>
           </div>
         )}
 

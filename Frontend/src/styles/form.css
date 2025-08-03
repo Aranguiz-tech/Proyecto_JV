@@ -33,7 +33,10 @@
         height: 20px;
     }
 }
-
+.input-small {
+  max-width: 120px;
+  align-items: center;
+}
 
 .form {
 	background-color: #e8f5e9; 
@@ -247,3 +250,4 @@ input {
 	height: 25px;
 	margin-top: 4px;
 }
+

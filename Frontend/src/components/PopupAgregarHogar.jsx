@@ -1,5 +1,5 @@
 import Form from './Form';
-import '@styles/popup.css';
+import '@styles/popupAdaptable.css';
 import CloseIcon from '@assets/XIcon.svg';
 
 export default function PopupAgregarHogar({ show, setShow, action }) {
@@ -23,6 +23,7 @@ export default function PopupAgregarHogar({ show, setShow, action }) {
                   name: "tipo",
                   fieldType: 'select',
                   required: true,
+                  className: "input-small",
                   options: [
                     { label: "Psj.", value: "Psj." },
                     { label: "Av.", value: "Av." }
@@ -38,14 +39,19 @@ export default function PopupAgregarHogar({ show, setShow, action }) {
                   pattern: /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.-]+$/,
                   patternMessage: "Solo letras, números y espacios"
                 },
-                {
-                  label: "Número #",
-                  name: "numero",
-                  fieldType: 'input',
-                  type: "number",
-                  required: true,
-                  min: 1
-                }
+                  {
+                    label: "Numero #",
+                    name: "numero",
+                    fieldType: 'input',
+                    type: "number",
+                    required: true,
+                    min: 1,
+                    onInput: (e) => {
+                      e.target.value = Math.max(1, parseInt(e.target.value) || "");
+                    },
+                    className: "input-small"
+                  }
+
               ]}
               onSubmit={handleSubmit}
               buttonText="Crear hogar"

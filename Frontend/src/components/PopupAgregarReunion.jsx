@@ -1,5 +1,5 @@
 import Form from './Form';
-import '@styles/popup.css';
+import '@styles/popupAdaptable.css';
 import CloseIcon from '@assets/XIcon.svg';
 
 export default function PopupAgregarReunion({ show, setShow, action }) {

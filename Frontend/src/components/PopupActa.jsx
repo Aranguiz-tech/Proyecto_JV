@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "@styles/popup.css";
+import "@styles/popupAdaptable.css";
 import CloseIcon from "@assets/XIcon.svg";
 
 const PopupActa = ({ show, setShow, onSave }) => {
@@ -32,37 +32,39 @@ const PopupActa = ({ show, setShow, onSave }) => {
           <button className="close" onClick={handleClose}>
             <img src={CloseIcon} alt="Cerrar" />
           </button>
-          <div className="form">
+          <form className="form" onSubmit={(e) => e.preventDefault()}>
             <h1 className="title">Finalizar reunión y guardar acta</h1>
 
             <div className="container_inputs">
-              <label className="label">Título del acta:</label>
+              <label htmlFor="titulo">Título del acta:</label>
               <input
-                className="input"
+                name="titulo"
                 type="text"
                 placeholder="Ej: Acta de reunión mensual"
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
-                maxLength={100}
+                className="input"
+                style={{ maxWidth: "300px" }} 
               />
             </div>
 
             <div className="container_inputs">
-              <label className="label">Contenido del acta:</label>
+              <label htmlFor="contenido">Contenido del acta:</label>
               <textarea
-                className="input"
+                name="contenido"
                 placeholder="Ej: Se trataron temas importantes para la comunidad..."
                 value={contenido}
                 onChange={(e) => setContenido(e.target.value)}
-                rows={10}
-                maxLength={1000}
-              ></textarea>
+                className="input"
+                rows={6}
+                style={{ minWidth: "300px", maxWidth: "500px" }} 
+              />
             </div>
 
-            <button onClick={handleSubmit} className="save-button">
+            <button type="button" onClick={handleSubmit}>
               Guardar y finalizar reunión
             </button>
-          </div>
+          </form>
         </div>
       </div>
     )
