@@ -70,7 +70,7 @@ const router = createBrowserRouter([
       {
         path: 'solicitudes',
         element: (
-          <ProtectedRoute allowedRoles={['administrador']}>
+          <ProtectedRoute allowedRoles={['jefe de hogar']}>
             <Solicitud />
           </ProtectedRoute>
         )

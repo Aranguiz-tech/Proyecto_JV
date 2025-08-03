@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import PDFDocument from "pdfkit";
+import { transporter } from "./correo.service.js";
 
 export async function createSolicitudService(data) {
   try {
@@ -42,6 +43,25 @@ export async function getSolicitudPorIdService(id) {
     return [null, "Error del servidor"];
   }
 }
+
+export async function getSolicitudesPorRutService(rut) {
+  try {
+    const solicitudRepo = AppDataSource.getRepository("Solicitud");
+
+    const solicitudes = await solicitudRepo
+      .createQueryBuilder("solicitud")
+      .leftJoinAndSelect("solicitud.usuario", "usuario")
+      .where("usuario.rut = :rut", { rut })
+      .orderBy("solicitud.id", "DESC")
+      .getMany();
+
+    return [solicitudes, null];
+  } catch (error) {
+    return [null, error];
+  }
+}
+
+
 
 export async function getSolicitudesService() {
   try {
@@ -116,6 +136,21 @@ export async function updateEstadoSolicitudService(id, data) {
       if (!justificacionDeRechazo || justificacionDeRechazo === null) {
         solicitud.justificacionDeRechazo = "No se ha proporcionado una justificación de rechazo";
       }
+
+      try {
+        const { nombre, apellido, email } = solicitud.usuario;
+        await transporter.sendMail({
+          from: '"Junta de Vecinos" <gabriels.guzmanc@gmail.com>', 
+          to: email,  
+          subject: "Certificado de Residencia Rechazado",
+          text: `Estimado(a) ${nombre} ${apellido},\n\nSu solicitud de certificado de residencia ha sido rechazada. Encontrará la justificacion de rechazo de la solicitud en la pagina oficial de la junta de vecinos.\n\nSaludos cordiales,\nJunta de Vecinos Parque Ecuador`,
+        });
+        console.log("Correo enviado correctamente");
+      } catch (error) {
+        console.error("Error enviando correo:", error);
+      }
+
+
       solicitud.justificacionDeRechazo = justificacionDeRechazo;
     } else if (solicitud.tipo === "Certificado de Residencia") {
       const carpetaDocumentos = path.join(process.cwd(), "documentos");
@@ -137,7 +172,7 @@ export async function updateEstadoSolicitudService(id, data) {
         .fontSize(10)
         .text(new Date().toLocaleDateString("es-CL"), { align: "right" });
 
-      const { nombre, apellido, rut, hogar } = solicitud.usuario;
+      const { nombre, apellido, email, rut, hogar } = solicitud.usuario;
       const direccion = hogar?.direccion || "DIRECCIÓN NO DISPONIBLE";
 
       doc
@@ -177,6 +212,20 @@ export async function updateEstadoSolicitudService(id, data) {
 
       solicitud.documentoNombre = fileName;
       solicitud.documentoRuta = filePath;
+
+      try {
+        await transporter.sendMail({
+          from: '"Junta de Vecinos" <gabriels.guzmanc@gmail.com>', 
+          to: email,  
+          subject: "Certificado de Residencia Aprobado",
+          text: `Estimado(a) ${nombre} ${apellido},\n\nSu solicitud de certificado de residencia ha sido aprobada. Encontrará su solicitud en la pagina oficial de la junta de vecinos.\n\nSaludos cordiales,\nJunta de Vecinos Parque Ecuador`,
+        });
+        console.log("Correo enviado correctamente");
+      } catch (error) {
+        console.error("Error enviando correo:", error);
+      }
+
+
     }
     solicitud.justificacionDeRechazo = justificacionDeRechazo;
 

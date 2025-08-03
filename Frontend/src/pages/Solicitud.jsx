@@ -14,7 +14,7 @@ import DeleteIconDisable from '@assets/deleteIconDisabled.svg';
 import '@styles/solicitud.css';
 
 import {
-  getSolicitudes,
+  getSolicitudesPorUsuario,
   updateSolicitud,
   deleteSolicitud,
   createSolicitud,
@@ -55,13 +55,13 @@ const Solicitud = () => {
   const [popupArchivoUrl, setPopupArchivoUrl] = useState(null);
   const [popupDocumentoUrl, setPopupDocumentoUrl] = useState(null);
 
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   const fetchSolicitudes = async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getSolicitudes();
+      const result = await getSolicitudesPorUsuario(token);
       if (!Array.isArray(result)) {
         setError(result.message || 'Error al obtener solicitudes');
         setSolicitudes([]);

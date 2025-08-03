@@ -1,4 +1,5 @@
 import { AppDataSource } from "../config/configDb.js";
+import { transporter } from "./correo.service.js";
 
 export async function createReunionService(datos) {
   try {
@@ -31,6 +32,25 @@ export async function createReunionService(datos) {
     });
 
     await reunionRepo.save(nuevaReunion);
+
+    const usuarioRepo = AppDataSource.getRepository("Usuario");
+
+    const usuarios = await usuarioRepo.find();
+
+    for (const usuario of usuarios) {
+      try {
+        await transporter.sendMail({
+          from: '"Junta de Vecinos" <gabriels.guzmanc@gmail.com>', 
+          to: usuario.email,  
+          subject: `Reunión Programada Fecha: ${fechaInicio}`,
+          text: `Estimados vecinos,\n\nSe ha programado una reunion para la fecha ${fechaInicio} con motivo ${asunto} \n\n Esperamos su asistencia\n\nSaludos cordiales,\nJunta de Vecinos Parque Ecuador`,
+        });
+        console.log("Correo enviado correctamente");
+      } catch (error) {
+        console.error("Error enviando correo:", error);
+      }
+    }
+    
 
     return [nuevaReunion];
 
@@ -74,10 +94,34 @@ export async function cancelarReunionService(id, motivo) {
       return [ "No puedes cancelar una reunión que ya fue realizada"];
     }
 
+    if (!motivo || motivo == "") {
+      motivo = "Sin motivo especificado";
+    }
+
     reunion.estado = "cancelada";
-    reunion.motivoCancelacion = motivo || "Sin motivo especificado";
+    reunion.motivoCancelacion = motivo
 
     await reunionRepo.save(reunion);
+
+
+    const usuarioRepo = AppDataSource.getRepository("Usuario");
+
+    const usuarios = await usuarioRepo.find();
+
+    for (const usuario of usuarios) {
+      try {
+        await transporter.sendMail({
+          from: '"Junta de Vecinos" <gabriels.guzmanc@gmail.com>', 
+          to: usuario.email,  
+          subject: `Reunión Cancelada Fecha: ${reunion.fechaInicio}`,
+          text: `Estimados vecinos,\n\nSe ha cancelado la reunion para la fecha ${reunion.fechaInicio} con motivo ${reunion.asunto} \n\n Por razones de: ${motivo.motivo} \n\nSaludos cordiales,\nJunta de Vecinos Parque Ecuador`,
+        });
+        console.log("Correo enviado correctamente");
+      } catch (error) {
+        console.error("Error enviando correo:", error);
+      }
+    }
+
 
     return [reunion];
 
