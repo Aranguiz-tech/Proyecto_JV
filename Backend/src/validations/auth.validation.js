@@ -11,25 +11,25 @@ export const domainEmailValidator = (value, helper) => {
 
 export const registerValidation = Joi.object({
   nombre: Joi.string()
-    .min(3)
+    .min(2)
     .max(25)
     .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     .required()
     .messages({
       "string.empty": "El nombre no puede estar vacío.",
-      "string.min": "El nombre debe tener al menos 3 caracteres.",
+      "string.min": "El nombre debe tener al menos 2 caracteres.",
       "string.max": "El nombre debe tener como máximo 25 caracteres.",
       "string.pattern.base": "El nombre solo puede contener letras y espacios.",
     }),
 
   apellido: Joi.string()
-    .min(3)
+    .min(2)
     .max(25)
     .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     .required()
     .messages({
       "string.empty": "El apellido no puede estar vacío.",
-      "string.min": "El apellido debe tener al menos 3 caracteres.",
+      "string.min": "El apellido debe tener al menos 2 caracteres.",
       "string.max": "El apellido debe tener como máximo 25 caracteres.",
       "string.pattern.base": "El apellido solo puede contener letras y espacios.",
     }),

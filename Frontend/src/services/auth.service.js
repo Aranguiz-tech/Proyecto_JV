@@ -22,11 +22,11 @@ export async function login(dataUser) {
         return error.response.data;
     }
 }
-
 export async function register(data) {
     try {
         const dataRegister = convertirMinusculas(data);
-        const { nombre, apellido, email, rut, password, telefono, id_hogar, rol} = dataRegister
+        const { nombre, apellido, email, rut, password, telefono, id_hogar, rol } = dataRegister;
+
         const response = await axios.post('/auth/register', {
             nombre,
             apellido,
@@ -37,11 +37,16 @@ export async function register(data) {
             telefono,
             id_hogar
         });
-        return response.data;
+
+        return { status: 'Success', data: response.data.data };
     } catch (error) {
-        return error.response.data;
+        if (error.response?.status === 400) {
+            return { status: 'Client error', details: error.response.data };
+        }
+        return { status: 'Error', details: { message: 'Error inesperado del servidor' } };
     }
 }
+
 
 export async function logout() {
     try {

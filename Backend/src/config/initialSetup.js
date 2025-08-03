@@ -14,12 +14,12 @@ async function createUsers() {
     if (userCount > 0) return;
   
     let hogar = await hogarRepository.findOne({
-      where: { direccion: "Calle Principal 123, Villa Ejemplo" },
+      where: { direccion: "Av. los manzanos #314" },
     });
 
    if (!hogar) {
     hogar = hogarRepository.create({
-    direccion: "Calle Principal 123, Villa Ejemplo",
+    direccion: "Av. los manzanos #314",
     });
     hogar = await hogarRepository.save(hogar); 
     console.log("* => Hogar creado");
@@ -34,7 +34,7 @@ async function createUsers() {
           rut: "21.151.897-9",
           email: "dilan@gmail.cl",
           telefono: "987654321",
-          password: await encryptPassword("Dilan12345"),
+          password: await encryptPassword("dilan1234"),
           rol: "administrador",
           hogar,
         })

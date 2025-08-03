@@ -25,27 +25,27 @@
     color: #4f664f;
     margin-left: 70px;
 }
-.icono-reunion {
-  width: 20px;
-  height: 20px;
-}
 
+.icono-reunion {
+    width: 20px;
+    height: 20px;
+}
 
 .filter-actions {
     display: flex;
     gap: 10px;
-    button {
-        background: rgba(255, 255, 255, 0.87);
-        border: #fff;
-        cursor: pointer;
-        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-        
-    }
 }
+.filter-actions button {
+    background: rgba(255, 255, 255, 0.87);
+    border: #fff;
+    cursor: pointer;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
 .estado-red {
-  color: #c0392b;
-  font-weight: bold;
-  text-transform: capitalize;
+    color: #c0392b;
+    font-weight: bold;
+    text-transform: capitalize;
 }
 
 .delete-user-button {
@@ -53,6 +53,25 @@
     margin-left: 6px;
     padding-left: 20px;
 }
+
+.estado-programada {
+    color: #2563eb;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.estado-realizada {
+    color: #6b7280; 
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.estado-default {
+    color: #9ca3af; 
+    font-weight: normal;
+    text-transform: capitalize;
+}
+
 
 @media (max-width: 767px) {
     .title-table {

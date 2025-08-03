@@ -9,13 +9,8 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const toggleNewPasswordVisibility = () => {
-        setShowNewPassword(!showNewPassword);
-    };
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
 
     const onFormSubmit = (data) => {
         onSubmit(data);
@@ -24,7 +19,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
     return (
         <form
             className="form"
-            style={{ backgroundColor: backgroundColor }}
+            style={{ backgroundColor }}
             onSubmit={handleSubmit(onFormSubmit)}
             autoComplete="off"
         >
@@ -39,13 +34,14 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                 minLength: field.minLength ? { value: field.minLength, message: `Debe tener al menos ${field.minLength} caracteres` } : false,
                                 maxLength: field.maxLength ? { value: field.maxLength, message: `Debe tener máximo ${field.maxLength} caracteres` } : false,
                                 pattern: field.pattern ? { value: field.pattern, message: field.patternMessage || 'Formato no válido' } : false,
-                                validate: field.validate || {},
                             })}
                             name={field.name}
                             placeholder={field.placeholder}
-                            type={field.type === 'password' && field.name === 'password' ? (showPassword ? 'text' : 'password') :
+                            type={
+                                field.type === 'password' && field.name === 'password' ? (showPassword ? 'text' : 'password') :
                                 field.type === 'password' && field.name === 'newPassword' ? (showNewPassword ? 'text' : 'password') :
-                                field.type}
+                                field.type
+                            }
                             defaultValue={field.defaultValue || ''}
                             disabled={field.disabled}
                             onChange={field.onChange}
@@ -58,7 +54,6 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                 minLength: field.minLength ? { value: field.minLength, message: `Debe tener al menos ${field.minLength} caracteres` } : false,
                                 maxLength: field.maxLength ? { value: field.maxLength, message: `Debe tener máximo ${field.maxLength} caracteres` } : false,
                                 pattern: field.pattern ? { value: field.pattern, message: field.patternMessage || 'Formato no válido' } : false,
-                                validate: field.validate || {},
                             })}
                             name={field.name}
                             placeholder={field.placeholder}
@@ -71,7 +66,6 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                         <select
                             {...register(field.name, {
                                 required: field.required ? 'Este campo es obligatorio' : false,
-                                validate: field.validate || {},
                             })}
                             name={field.name}
                             defaultValue={field.defaultValue || ''}
@@ -79,10 +73,8 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             onChange={field.onChange}
                         >
                             <option value="">Seleccionar opción</option>
-                            {field.options && field.options.map((option, optIndex) => (
-                                <option className="options-class" key={optIndex} value={option.value}>
-                                    {option.label}
-                                </option>
+                            {field.options?.map((option, optIndex) => (
+                                <option key={optIndex} value={option.value}>{option.label}</option>
                             ))}
                         </select>
                     )}
@@ -96,8 +88,8 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             <img src={showNewPassword ? ViewIcon : HideIcon} />
                         </span>
                     )}
-                    <div className={`error-message ${errors[field.name] || field.errorMessageData ? 'visible' : ''}`}>
-                        {errors[field.name]?.message || field.errorMessageData || ''}
+                    <div className={`error-message ${errors[field.name] ? 'visible' : ''}`}>
+                        {errors[field.name]?.message}
                     </div>
                 </div>
             ))}

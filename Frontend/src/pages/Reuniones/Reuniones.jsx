@@ -75,7 +75,6 @@ const Reuniones = () => {
       } else {
         showErrorAlert("Error", "Error desconocido al crear reunión.");
       }
-
     } catch (error) {
       showErrorAlert("Error", "No se pudo registrar la reunión.");
     }
@@ -94,7 +93,12 @@ const Reuniones = () => {
       width: 150,
       formatter: function (cell) {
         const estado = cell.getValue();
-        return `<span class="estado-red">${estado}</span>`;
+        const clase = estado === 'programada'
+          ? 'estado-programada'
+          : estado === 'realizada'
+            ? 'estado-realizada'
+            : 'estado-default';
+        return `<span class="${clase}">${estado}</span>`;
       }
     },
     { title: "Motivo de cancelación", field: "motivo", width: 300 },
@@ -107,7 +111,6 @@ const Reuniones = () => {
           <h1 className='title-table'>Reuniones</h1>
           <div className='filter-actions'>
             <Search value={filterFecha} onChange={handleFechaFilterChange} placeholder={'Filtrar por fecha'} />
-
             <button
               onClick={handleClickCancelar}
               disabled={dataReunion.length === 0 || !todasSonProgramadas}
@@ -117,7 +120,6 @@ const Reuniones = () => {
                 alt="cancelar"
               />
             </button>
-
             <button
               className='delete-user-button'
               onClick={() => handleDelete(dataReunion)}
@@ -128,7 +130,6 @@ const Reuniones = () => {
                 alt="eliminar"
               />
             </button>
-
             <button
               className='delete-user-button'
               onClick={() => {
@@ -140,13 +141,11 @@ const Reuniones = () => {
             >
               <img src={playicon} alt="iniciar" className="icono-reunion" />
             </button>
-
             <button className='delete-user-button' onClick={() => setIsPopupAgregarOpen(true)}>
               <img src={plus} alt="add-reunion" />
             </button>
           </div>
         </div>
-
         <Table
           data={reuniones}
           columns={columns}
@@ -156,14 +155,12 @@ const Reuniones = () => {
           onSelectionChange={handleSelectionChange}
         />
       </div>
-
       <PopupCancelarReunion
         show={isPopupOpen}
         setShow={setIsPopupOpen}
         data={dataReunion}
         action={handleUpdate}
       />
-
       <PopupAgregarReunion
         show={isPopupAgregarOpen}
         setShow={setIsPopupAgregarOpen}

@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 
 export default function PopupAgregar({ show, setShow, data, action }) {
     const userData = data && data.length > 0 ? data[0] : {};
-
     const { hogares } = useGetHogares();
     const [hogaresOptions, setHogaresOptions] = useState([]);
 
@@ -18,18 +17,17 @@ export default function PopupAgregar({ show, setShow, data, action }) {
         setHogaresOptions(opciones);
     }, [hogares]);
 
-    const handleSubmit = (formData) => {
-        action(formData);
+    const handleSubmit = async (formData) => {
+        await action(formData); // errores visuales se manejan desde Form
     };
 
-    const patternRut = new RegExp(/^(?:(?:[1-9]\d{0}|[1-2]\d{1})(\.\d{3}){2}|[1-9]\d{6}|[1-2]\d{7}|29\.999\.999|29999999)-[\dkK]$/);
+    const patternRut = /^(?:(?:[1-9]\d{0}|[1-2]\d{1})(\.\d{3}){2}|[1-9]\d{6}|[1-2]\d{7}|29\.999\.999|29999999)-[\dkK]$/;
 
     return (
-        <div>
-            { show && (
+        show && (
             <div className="bg">
                 <div className="popup">
-                    <button className='close' onClick={() => setShow(false)}>
+                    <button className="close" onClick={() => setShow(false)}>
                         <img src={CloseIcon} />
                     </button>
                     <Form
@@ -38,57 +36,61 @@ export default function PopupAgregar({ show, setShow, data, action }) {
                             {
                                 label: "Nombre",
                                 name: "nombre",
-                                defaultValue: userData.nombre|| "",
-                                placeholder: 'Gabriel',
-                                fieldType: 'input',
+                                defaultValue: userData.nombre || "",
+                                placeholder: "Gabriel",
+                                fieldType: "input",
                                 type: "text",
                                 required: true,
+                                minLength: 2,
                                 maxLength: 50,
                                 pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-                                patternMessage: "Debe contener solo letras y espacios",
+                                patternMessage: "Solo se permiten letras y espacios",
                             },
                             {
                                 label: "Apellido",
                                 name: "apellido",
                                 defaultValue: userData.apellido || "",
-                                placeholder: 'Aranguiz',
-                                fieldType: 'input',
+                                placeholder: "Aranguiz",
+                                fieldType: "input",
                                 type: "text",
                                 required: true,
+                                minLength: 2,
                                 maxLength: 50,
                                 pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-                                patternMessage: "Debe contener solo letras y espacios",
+                                patternMessage: "Solo se permiten letras y espacios",
                             },
                             {
                                 label: "Correo electrónico",
                                 name: "email",
                                 defaultValue: userData.email || "",
-                                placeholder: 'example@gmail.com',
-                                fieldType: 'input',
+                                placeholder: "example@gmail.com",
+                                fieldType: "input",
                                 type: "email",
                                 required: true,
-                                maxLength: 35
+                                maxLength: 35,
+                                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                patternMessage: "Correo no válido",
                             },
                             {
                                 label: "Rut",
                                 name: "rut",
                                 defaultValue: userData.rut || "",
-                                placeholder: '21.308.770-3',
-                                fieldType: 'input',
+                                placeholder: "21.308.770-3",
+                                fieldType: "input",
                                 type: "text",
+                                required: true,
                                 minLength: 9,
                                 maxLength: 12,
                                 pattern: patternRut,
-                                patternMessage: "Debe ser xx.xxx.xxx-x o xxxxxxxx-x",
-                                required: true,
+                                patternMessage: "Formato de RUT inválido",
                             },
                             {
                                 label: "Rol",
                                 name: "rol",
-                                fieldType: 'select',
+                                fieldType: "select",
                                 options: [
-                                    { value: 'vecino', label: 'vecino' },
-                                    { value: 'jefe de hogar', label: 'Jefe de hogar' },
+                                    { value: "vecino", label: "vecino" },
+                                    { value: "jefe de hogar", label: "Jefe de hogar" },
                                 ],
                                 required: true,
                                 defaultValue: userData.rol || "",
@@ -96,7 +98,7 @@ export default function PopupAgregar({ show, setShow, data, action }) {
                             {
                                 label: "Hogar",
                                 name: "id_hogar",
-                                fieldType: 'select',
+                                fieldType: "select",
                                 options: hogaresOptions,
                                 required: true,
                                 defaultValue: userData.id_hogar || "",
@@ -105,22 +107,21 @@ export default function PopupAgregar({ show, setShow, data, action }) {
                                 label: "Contraseña",
                                 name: "password",
                                 placeholder: "**********",
-                                fieldType: 'input',
+                                fieldType: "input",
                                 type: "password",
                                 required: true,
                                 minLength: 8,
                                 maxLength: 26,
                                 pattern: /^[a-zA-Z0-9]+$/,
-                                patternMessage: "Debe contener solo letras y números",
+                                patternMessage: "Solo letras y números",
                             }
                         ]}
                         onSubmit={handleSubmit}
                         buttonText="Agregar usuario"
-                        backgroundColor={'#fff'}
+                        backgroundColor="#fff"
                     />
                 </div>
             </div>
-            )}
-        </div>
+        )
     );
 }

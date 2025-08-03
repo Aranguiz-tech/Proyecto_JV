@@ -8,10 +8,8 @@ import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Solicitud from '@pages/Solicitud';
 import SolicitudD from '@pages/SolicitudD';
-import CrearReunion from '@pages/Reuniones/CrearReunion';
 import Reuniones from '@pages/Reuniones/Reuniones';
 import VistaReuniones from '@pages/Reuniones/VistaReuniones';
-import CrearHogares from '@pages/Hogares/CrearHogares';
 import Hogares from '@pages/Hogares/Hogares';
 import VistaHogares from '@pages/Hogares/VistaHogares';
 import Asistencia from '@pages/Reuniones/Asistencia';
@@ -32,14 +30,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['administrador']}>
             <Users />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'reuniones/crear',
-        element: (
-          <ProtectedRoute allowedRoles={['administrador']}>
-            <CrearReunion />
           </ProtectedRoute>
         )
       },
@@ -96,14 +86,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['administrador', 'jefe de hogar', 'vecino']}>
             <VistaHogares />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'hogares/crear',
-        element: (
-          <ProtectedRoute allowedRoles={['administrador']}>
-            <CrearHogares />
           </ProtectedRoute>
         )
       }
