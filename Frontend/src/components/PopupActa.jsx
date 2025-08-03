@@ -9,11 +9,19 @@ const PopupActa = ({ show, setShow, onSave }) => {
   const handleClose = () => setShow(false);
 
   const handleSubmit = () => {
-    if (!titulo || !contenido) {
-      alert("Completa todos los campos");
+    if (titulo.trim() === "" || contenido.trim() === "") {
+      alert("Completa todos los campos con información válida");
       return;
     }
-    onSave({ titulo, contenido });
+    if (titulo.length > 100) {
+      alert("El título no debe superar los 100 caracteres");
+      return;
+    }
+    if (contenido.length > 1000) {
+      alert("El contenido del acta es demasiado extenso");
+      return;
+    }
+    onSave({ titulo: titulo.trim(), contenido: contenido.trim() });
     setShow(false);
   };
 
@@ -35,6 +43,7 @@ const PopupActa = ({ show, setShow, onSave }) => {
                 placeholder="Ej: Acta de reunión mensual"
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
+                maxLength={100}
               />
             </div>
 
@@ -46,6 +55,7 @@ const PopupActa = ({ show, setShow, onSave }) => {
                 value={contenido}
                 onChange={(e) => setContenido(e.target.value)}
                 rows={10}
+                maxLength={1000}
               ></textarea>
             </div>
 

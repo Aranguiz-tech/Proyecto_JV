@@ -1,45 +1,57 @@
-import { useEffect, useState } from "react";
-import { getUsuariosPorHogar } from "@services/hogar.service.js";
-import "@styles/popup.css";
-import CloseIcon from "@assets/XIcon.svg";
+import { useEffect, useState } from 'react'
+import { getAllHogares, getUsuariosPorHogar } from '@services/hogar.service'
+import '@styles/popupver.css'
 
-export default function PopupVistaHogares({ show, setShow, hogarId }) {
-  const [usuarios, setUsuarios] = useState([]);
+const PopupVistaHogares = ({ show, setShow, hogarId }) => {
+  const [hogar, setHogar] = useState(null)
+  const [usuarios, setUsuarios] = useState([])
 
   useEffect(() => {
-    if (hogarId) {
+    if (hogarId && show) {
+      getAllHogares(hogarId).then((res) => {
+        if (res) setHogar(res)
+      })
       getUsuariosPorHogar(hogarId).then((res) => {
-        setUsuarios(res);
-      });
+        if (res) setUsuarios(res)
+      })
     }
-  }, [hogarId]);
+  }, [hogarId, show])
 
-  if (!show) return null;
+  if (!show || !hogar) return null
 
   return (
-    <div className="bg">
-      <div className="popup">
-        <button className="close" onClick={() => setShow(false)}>
-          <img src={CloseIcon} alt="cerrar" />
-        </button>
-        <div className="form" style={{ padding: "30px", overflowY: "auto" }}>
-          <h2 className="title" style={{ marginBottom: "20px" }}>
-            Personas del hogar
-          </h2>
-          {usuarios.length > 0 ? (
-            usuarios.map((usuario, index) => (
-              <div key={index} style={{ marginBottom: "15px" }}>
-                <p><strong>Nombre:</strong> {usuario.nombre}</p>
-                <p><strong>Apellido:</strong> {usuario.apellido}</p>
-                <p><strong>Correo:</strong> {usuario.email}</p>
-                <hr style={{ margin: "10px 0" }} />
-              </div>
-            ))
-          ) : (
-            <p>No hay usuarios en este hogar.</p>
-          )}
+    <div className="popup-fondo" onClick={() => setShow(false)}>
+      <div className="popup-ver" onClick={(e) => e.stopPropagation()}>
+        <h2 className="title">🏠 Detalles del hogar</h2>
+
+        <div className="fila">
+          <p className="label">Dirección:</p>
+          <p className="valor">{hogar.direccion}</p>
         </div>
+
+        <div className="fila">
+          <p className="label">Residentes:</p>
+          <p className="valor">{usuarios.length}</p>
+        </div>
+
+        {usuarios.length > 0 && (
+          <div className="residentes-lista">
+            {usuarios.map((u, i) => (
+              <div key={i} className="residente">
+                <p className="rol">• {u.rol}:</p>
+                <p className="nombre">
+                  {u.nombre} {u.apellido}
+                </p>
+                <p className="email">{u.email}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button onClick={() => setShow(false)}>Cerrar</button>
       </div>
     </div>
-  );
+  )
 }
+
+export default PopupVistaHogares

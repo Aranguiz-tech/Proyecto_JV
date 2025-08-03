@@ -22,6 +22,9 @@ const PopupCancelarReunion = ({ show, setShow, data, action }) => {
       fieldType: 'input',
       type: "text",
       required: true,
+      maxLength: 255,
+      pattern: /^(?!\s*$)[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,:;!?()"-]+$/,
+      patternMessage: "Solo letras, números y signos básicos",
     },
   ];
 
@@ -29,7 +32,7 @@ const PopupCancelarReunion = ({ show, setShow, data, action }) => {
     show && (
       <div className="bg">
         <div className="popup">
-          <button className='close' onClick={handleClose}>
+          <button className="close" onClick={handleClose}>
             <img src={CloseIcon} alt="Cerrar" />
           </button>
           <Form

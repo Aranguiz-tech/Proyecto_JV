@@ -1,0 +1,61 @@
+.verhogar-contenedor {
+    margin-top: 40px;
+  background: linear-gradient(90deg, #d2ffe7, #f0fff5);
+  padding: 60px 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titulo-hogar {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #1c4d32;
+  text-align: center;
+}
+
+.buscador-hogar {
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.verhogar-listado {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 700px;
+  align-items: center;
+}
+
+.hogar-card {
+  background-color: #ffffff;
+  border: 1px solid #b2e0c2;
+  border-radius: 10px;
+  padding: 18px 25px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.hogar-card:hover {
+  background-color: #c3f3d4;
+  transform: scale(1.01);
+}
+
+.hogar-card.selected {
+  background-color: #c9ebce;
+  border: 2px solid #1f2420;
+  color: #00330f;
+}
+
+.direccion {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}

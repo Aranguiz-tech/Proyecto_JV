@@ -1,53 +1,54 @@
-import useGetHogares from '@hooks/hogar/useGetHogares';
-import Search from '@components/Search';
-import HogaresList from '@components/HogaresList';
-import PopupVistaHogares from '@components/PopupVistaHogares';
-import { useState } from 'react';
-import '@styles/users.css';
+import { useState } from 'react'
+import useGetHogares from '@hooks/hogar/useGetHogares'
+import Search from '@components/Search'
+import HogaresList from '@components/HogaresList'
+import PopupVistaHogares from '@components/PopupVistaHogares'
+import '@styles/verHogares.css'
 
 const VistaHogares = () => {
-  const { hogares } = useGetHogares();
-  const [filterDireccion, setFilterDireccion] = useState('');
-  const [selectedHogarId, setSelectedHogarId] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
+  const { hogares } = useGetHogares()
+  const [direccion, setDireccion] = useState('')
+  const [hogarId, setHogarId] = useState(null)
+  const [verPopup, setVerPopup] = useState(false)
 
-  const handleFilterChange = (e) => {
-    setFilterDireccion(e.target.value);
-  };
+  const cambiarFiltro = (e) => {
+    setDireccion(e.target.value)
+  }
 
-  const handleSelection = (selected) => {
-    if (selected[0]) {
-      setSelectedHogarId(selected[0].id);
-      setShowPopup(true);
+  const seleccionar = (seleccionado) => {
+    if (seleccionado[0]) {
+      setHogarId(seleccionado[0].id)
+      setVerPopup(true)
     }
-  };
+  }
 
   return (
-    <div className='main-containers'>
-      <div className='table-containers'>
-        <div className='top-tables'>
-          <h1 className='title-table-hogar'>Hogares</h1>
-          <Search
-            value={filterDireccion}
-            onChange={handleFilterChange}
-            placeholder={'Filtrar por dirección'}
-          />
-        </div>
+    <div className="verhogar-contenedor">
+      <h1 className="titulo-hogar">Listado de hogares</h1>
 
+      <div className="buscador-hogar">
+        <Search
+          value={direccion}
+          onChange={cambiarFiltro}
+          placeholder="Filtrar por dirección"
+        />
+      </div>
+
+      <div className="verhogar-listado">
         <HogaresList
           data={hogares}
-          filter={filterDireccion}
-          onSelectionChange={handleSelection}
+          filter={direccion}
+          onSelectionChange={seleccionar}
         />
       </div>
 
       <PopupVistaHogares
-        show={showPopup}
-        setShow={setShowPopup}
-        hogarId={selectedHogarId}
+        show={verPopup}
+        setShow={setVerPopup}
+        hogarId={hogarId}
       />
     </div>
-  );
-};
+  )
+}
 
-export default VistaHogares;
+export default VistaHogares

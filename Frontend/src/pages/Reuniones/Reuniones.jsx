@@ -39,6 +39,24 @@ const Reuniones = () => {
   };
 
   const handleRegister = async (data) => {
+    const asuntoValido = data.asunto && data.asunto.trim().length > 0 && data.asunto.length <= 255;
+    const lugarValido = data.lugar && data.lugar.trim().length > 0;
+    const fechaHoy = new Date().toISOString().split("T")[0];
+    const fechaValida = data.fechaInicio && data.fechaInicio >= fechaHoy;
+
+    if (!asuntoValido) {
+      showErrorAlert("Asunto inválido", "El asunto es obligatorio y no puede exceder los 255 caracteres.");
+      return;
+    }
+    if (!lugarValido) {
+      showErrorAlert("Lugar inválido", "Debes seleccionar un lugar válido.");
+      return;
+    }
+    if (!fechaValida) {
+      showErrorAlert("Fecha inválida", "No puedes agendar reuniones en fechas pasadas.");
+      return;
+    }
+
     try {
       const response = await createReunion(data);
 

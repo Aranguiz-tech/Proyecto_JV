@@ -12,7 +12,7 @@ export default function PopupAgregarHogar({ show, setShow, action }) {
       {show && (
         <div className="bg">
           <div className="popup">
-            <button className='close' onClick={() => setShow(false)}>
+            <button className="close" onClick={() => setShow(false)}>
               <img src={CloseIcon} alt="cerrar" />
             </button>
             <Form
@@ -32,8 +32,11 @@ export default function PopupAgregarHogar({ show, setShow, action }) {
                   label: "Dirección",
                   name: "Direccion",
                   fieldType: 'input',
-                    type: "text",
+                  type: "text",
                   required: true,
+                  maxLength: 60,
+                  pattern: /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.-]+$/,
+                  patternMessage: "Solo letras, números y espacios"
                 },
                 {
                   label: "Número #",
@@ -41,7 +44,7 @@ export default function PopupAgregarHogar({ show, setShow, action }) {
                   fieldType: 'input',
                   type: "number",
                   required: true,
-                  min: 1,
+                  min: 1
                 }
               ]}
               onSubmit={handleSubmit}

@@ -93,7 +93,8 @@ export async function getUsuariosPorHogarService(id) {
     return {
       nombre: u.nombre,
       apellido: u.apellido,
-      email: u.email
+      email: u.email,
+      rol: u.rol
     }
   })
   return [usuarios]

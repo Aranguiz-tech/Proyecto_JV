@@ -28,7 +28,7 @@ const Login = () => {
   };
 
   return (
-    <main className="container">
+    <main className="container login-background">
       <Form
         title="Iniciar sesión"
         defaultValues={inputData}

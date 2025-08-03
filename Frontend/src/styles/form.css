@@ -167,7 +167,19 @@
 		align-items: center;
 		margin-top: 10px;
 	}
+
 }
+.login-background {
+	background-image: url('/Parque ecuador.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .form .error-message {
     visibility: hidden;
     height: 20px;

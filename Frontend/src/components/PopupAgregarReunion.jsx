@@ -12,7 +12,7 @@ export default function PopupAgregarReunion({ show, setShow, action }) {
       {show && (
         <div className="bg">
           <div className="popup">
-            <button className='close' onClick={() => setShow(false)}>
+            <button className="close" onClick={() => setShow(false)}>
               <img src={CloseIcon} alt="cerrar" />
             </button>
             <Form
@@ -26,6 +26,8 @@ export default function PopupAgregarReunion({ show, setShow, action }) {
                   type: "text",
                   required: true,
                   maxLength: 255,
+                  pattern: /^(?!\s*$)[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,:;!?()"-]+$/,
+                  patternMessage: "Solo letras, números y signos básicos",
                 },
                 {
                   label: "Fecha de la reunión",

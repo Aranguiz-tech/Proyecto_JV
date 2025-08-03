@@ -25,7 +25,7 @@ export default function PopupEditarHogar({ show, setShow, action, data }) {
                 options: [
                   { label: "Psj.", value: "Psj." },
                   { label: "Av.", value: "Av." }
-                ]
+                ],
               },
               {
                 label: "Dirección",
@@ -33,6 +33,9 @@ export default function PopupEditarHogar({ show, setShow, action, data }) {
                 fieldType: 'input',
                 type: "text",
                 required: true,
+                maxLength: 80,
+                pattern: /^(?!\s*$)[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,-]+$/,
+                patternMessage: "Solo letras, números y signos básicos",
               },
               {
                 label: "Número #",
@@ -40,6 +43,7 @@ export default function PopupEditarHogar({ show, setShow, action, data }) {
                 fieldType: 'input',
                 type: "number",
                 required: true,
+                min: 1,
               }
             ]}
             onSubmit={handleSubmit}

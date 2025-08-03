@@ -1,45 +1,88 @@
-.reuniones-todo {
-  padding: 100px 20px 20px 20px; 
+.reuniones-lista {
+  max-width: 1000px;
+  margin: 140px auto 20px auto;
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .reunion-grande {
   border: 2px solid #3b82f6;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 30px;
-  background-color: #ebf4ff;
-}
-
-.otras-reuniones {
+  border-radius: 12px;
+  background-color: #e6f4ff;
+  padding: 20px;
+  font-size: 18px;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  cursor: default;
 }
 
-.reunion-chica {
-  border: 1px solid gray;
-  padding: 10px;
-  border-radius: 8px;
+.reunion-grande:hover {
+  background-color: #d3ebff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.reuniones-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+
+.reunion-card {
+  width: 300px;
+  border: 1px solid #1a1818;
+  border-radius: 10px;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   cursor: pointer;
+  text-align: center;
 }
 
-.reunion-chica.programada {
+.reunion-card:hover,
+.reunion-card.programada:hover,
+.reunion-card.realizada:hover,
+.reunion-card.cancelada:hover {
+  background-color: #d4dfcbbe;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.reunion-card.programada {
   background-color: #e6ffed;
 }
 
-.reunion-chica.realizada {
-  background-color: #393f3c3f;
+.reunion-card.realizada {
+  background-color: #f1f1f1;
 }
 
-.reunion-chica.cancelada {
-  background-color: #f0f0f0;
+.reunion-card.cancelada {
+  background-color: #f9f9f9;
   color: #666;
 }
 
+.reunion-card.abierta {
+  background-color: #4e634b25;
+}
+
+.reunion-card.abierta:hover {
+  background-color: #c0d4c083;
+}
+
 .estado-text {
-  margin: 4px 0;
   font-weight: bold;
   text-transform: uppercase;
+  font-size: 15px;
 }
 
 .estado-text.programada {
@@ -55,7 +98,19 @@
 }
 
 button {
-  margin-top: 5px;
-  padding: 4px 8px;
+  text-align: center;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
   cursor: pointer;
+  align-self: center;
+}
+
+button:hover {
+  background-color: #256429;
 }
