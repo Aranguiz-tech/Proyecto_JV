@@ -1,4 +1,5 @@
 import axios from './root.service.js';
+import authAxios from './axiosConfig.js';
 
 export async function getSolicitudes() {
   try {
@@ -17,6 +18,19 @@ export async function getSolicitudPorId(id) {
     return error.response?.data || { message: "Error inesperado" };
   }
 }
+
+export async function getSolicitudesPorUsuario(token) {
+  try {
+    const { data } = await axios.get('/solicitud/usuario', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data.data;
+  } catch (error) {
+    return error.response?.data || { message: 'Error inesperado' };
+  }
+}
+
+
 
 export async function createSolicitud(solicitudData) {
   try {
