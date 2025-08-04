@@ -41,8 +41,13 @@ const Reuniones = () => {
   const handleRegister = async (data) => {
     const asuntoValido = data.asunto && data.asunto.trim().length > 0 && data.asunto.length <= 255;
     const lugarValido = data.lugar && data.lugar.trim().length > 0;
-    const fechaHoy = new Date().toISOString().split("T")[0];
-    const fechaValida = data.fechaInicio && data.fechaInicio >= fechaHoy;
+    const fechaHoy = new Date();
+    const fechaIngresada = new Date(data.fechaInicio);
+    const mismaFecha =
+      fechaHoy.getFullYear() === fechaIngresada.getFullYear() &&
+      fechaHoy.getMonth() === fechaIngresada.getMonth() &&
+      fechaHoy.getDate() === fechaIngresada.getDate();
+    const fechaValida = data.fechaInicio && (fechaIngresada > fechaHoy || mismaFecha);
 
     if (!asuntoValido) {
       showErrorAlert("Asunto inválido", "El asunto es obligatorio y no puede exceder los 255 caracteres.");
@@ -83,9 +88,27 @@ const Reuniones = () => {
   const algunaEsRealizada = dataReunion.some(r => r.estado === 'realizada');
   const todasSonProgramadas = dataReunion.every(r => r.estado === 'programada');
 
+  const esHoy = (fecha) => {
+    const hoy = new Date();
+    const fechaReunion = new Date(fecha);
+    return (
+      hoy.getFullYear() === fechaReunion.getFullYear() &&
+      hoy.getMonth() === fechaReunion.getMonth() &&
+      hoy.getDate() === fechaReunion.getDate()
+    );
+  };
+
   const columns = [
     { title: "Fecha", field: "fecha", width: 150 },
-    { title: "Asunto", field: "asunto", width: 250 },
+    {
+      title: "Asunto",
+      field: "asunto",
+      width: 250,
+      formatter: (cell) => {
+        const valor = cell.getValue();
+        return `<span title="${valor}">${valor}</span>`;
+      }
+    },
     { title: "Lugar", field: "lugar", width: 250 },
     {
       title: "Estado",
@@ -133,11 +156,26 @@ const Reuniones = () => {
             <button
               className='delete-user-button'
               onClick={() => {
-                if (dataReunion.length === 1 && dataReunion[0].estado === 'programada') {
+                if (
+                  dataReunion.length === 1 &&
+                  dataReunion[0].estado === 'programada' &&
+                  esHoy(dataReunion[0].fechaInicio)
+                ) {
                   window.location.href = `/asistencia/${dataReunion[0].id}`;
                 }
               }}
-              disabled={dataReunion.length !== 1 || dataReunion[0].estado !== 'programada'}
+              disabled={
+                dataReunion.length !== 1 ||
+                dataReunion[0].estado !== 'programada' ||
+                !esHoy(dataReunion[0].fechaInicio)
+              }
+              title={
+                dataReunion.length === 1 &&
+                dataReunion[0].estado === 'programada' &&
+                !esHoy(dataReunion[0].fechaInicio)
+                  ? "No puedes iniciar la reunión si no es el día programado"
+                  : ""
+              }
             >
               <img src={playicon} alt="iniciar" className="icono-reunion" />
             </button>

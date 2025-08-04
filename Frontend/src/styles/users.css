@@ -71,6 +71,15 @@
     font-weight: normal;
     text-transform: capitalize;
 }
+.tabulator-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabulator-cell[title] {
+  cursor: help;
+}
 
 
 @media (max-width: 767px) {
